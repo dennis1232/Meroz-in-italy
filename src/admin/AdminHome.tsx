@@ -54,7 +54,6 @@ export default function AdminHome() {
     if (modalBusy) return
     setModal({ kind: 'none' })
     setFieldErr(null)
-    setActionErr(null)
   }
 
   const openNew = () => {
