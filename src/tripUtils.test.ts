@@ -84,7 +84,7 @@ describe('TAGS / TAG_LABEL', () => {
 })
 
 const sampleTrip = (): TripRaw => ({
-  meta: { title: 'T', subtitle: 'S', country: 'Italy', startISO: '2026-06-22', endISO: '2026-07-04', who: 'us', cover: 'cover.webp' },
+  meta: { title: 'T', subtitle: 'S', country: 'Italy', startISO: '2026-06-22', endISO: '2026-07-04', who: 'us', cover: 'cover.webp', lang: 'he' as const },
   contact: { instagram: 'x', phoneIL: '+972 1', phoneILraw: '+9721', phoneIT: '+39 2', phoneITraw: '+392' },
   days: [{
     n: 1, date: '22/06', dow: 'יום שני', en: 'June 22', iso: '2026-06-22', hero: 'day01.webp',

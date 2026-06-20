@@ -5,6 +5,7 @@ import {
   TAGS, TAG_LABEL, isoToFields, parseLatLng, toRaw, toClean,
   type StopRaw, type SpotRaw, type DayRaw, type TripRaw
 } from './tripUtils'
+import { uploadImage, saveTrip, getConfig } from './cloud'
 
 declare global {
   interface Window {
@@ -51,6 +52,13 @@ function download(obj: unknown, filename: string) {
   URL.revokeObjectURL(a.href)
 }
 
+async function expandShortUrl(url: string): Promise<string> {
+  const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+  if (!res.ok) throw new Error('proxy error')
+  const json = await res.json()
+  return (json.status?.url as string | undefined) ?? url
+}
+
 // ── Reusable: location paste field ────────────────────────────────────────────
 function LocationField({
   lat, lng, onSet
@@ -61,30 +69,42 @@ function LocationField({
 }) {
   const [paste, setPaste] = useState('')
   const [err, setErr] = useState(false)
-  const apply = (v: string) => {
+  const [expanding, setExpanding] = useState(false)
+
+  const apply = async (v: string) => {
     setPaste(v)
+    setErr(false)
     if (!v) return
-    const r = parseLatLng(v)
+    let target = v
+    if (/maps\.app\.goo\.gl/.test(v)) {
+      setExpanding(true)
+      try { target = await expandShortUrl(v) }
+      catch { setErr(true); setExpanding(false); return }
+      setExpanding(false)
+    }
+    const r = parseLatLng(target)
     if (r) { onSet(r.lat, r.lng); setErr(false); setPaste('') }
     else setErr(true)
   }
+
   return (
     <div className="adm-loc">
       <label>
         📍 Paste Google Maps / Waze link
         <input
           value={paste}
-          placeholder="https://maps.google.com/...  or  43.77, 11.26"
+          placeholder="https://maps.app.goo.gl/...  or  43.77, 11.26"
           onChange={(e) => apply(e.target.value)}
         />
       </label>
-      {lat && lng ? (
+      {expanding && <div className="adm-loc-no">⏳ extracting coordinates…</div>}
+      {!expanding && lat && lng ? (
         <div className="adm-loc-ok">
           ✓ {Number(lat).toFixed(4)}, {Number(lng).toFixed(4)}
           <button onClick={() => onSet('', '')}>clear</button>
         </div>
       ) : (
-        <div className="adm-loc-no">{err ? '⚠️ no coordinates found in that link' : 'no location set'}</div>
+        !expanding && <div className="adm-loc-no">{err ? '⚠️ no coordinates found in that link' : 'no location set'}</div>
       )}
     </div>
   )
@@ -93,11 +113,24 @@ function LocationField({
 // ── Reusable: photo upload field ──────────────────────────────────────────────
 function PhotoField({ label, value, onSet }: { label: string; value: string; onSet: (v: string) => void }) {
   const [busy, setBusy] = useState(false)
+  const [uploadErr, setUploadErr] = useState('')
   const pick = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     setBusy(true)
-    try { onSet(await fileToDataUrl(file)) } finally { setBusy(false); e.target.value = '' }
+    setUploadErr('')
+    try {
+      if (getConfig()?.cloudinaryCloud) {
+        onSet(await uploadImage(file))
+      } else {
+        onSet(await fileToDataUrl(file))
+      }
+    } catch (err) {
+      setUploadErr(String(err))
+    } finally {
+      setBusy(false)
+      e.target.value = ''
+    }
   }
   return (
     <div className="adm-photo">
@@ -108,6 +141,7 @@ function PhotoField({ label, value, onSet }: { label: string; value: string; onS
           <input type="file" accept="image/*" onChange={pick} hidden />
         </label>
       </div>
+      {uploadErr && <div style={{ color: 'red', fontSize: 12, marginTop: 4 }}>{uploadErr}</div>}
       {value
         ? <img className="adm-photo-prev" src={A(value)} alt="" />
         : <div className="adm-photo-empty">no photo</div>}
@@ -147,47 +181,51 @@ function StopRow({
 
       {open && (
         <div className="adm-stop-body">
-          <label>
-            Name
-            <input value={stop.name} onChange={(e) => set('name', e.target.value)} />
-          </label>
-          <div className="adm-row2">
+          <div className="adm-stop-left">
             <label>
-              Time
-              <input value={stop.time || ''} placeholder="20:00" onChange={(e) => set('time', e.target.value || undefined)} />
+              Name
+              <input value={stop.name} onChange={(e) => set('name', e.target.value)} />
             </label>
-            <label>
-              Tag
-              <select value={stop.tag || ''} onChange={(e) => set('tag', e.target.value || undefined)}>
-                <option value="">—</option>
-                {TAGS.map((t) => <option key={t} value={t}>{TAG_LABEL[t]}</option>)}
-              </select>
-            </label>
-          </div>
-          <label>
-            Description
-            <textarea rows={2} value={stop.desc || ''} onChange={(e) => set('desc', e.target.value || undefined)} />
-          </label>
-          <LocationField lat={stop.lat} lng={stop.lng} onSet={(la, ln) => onChange({ ...stop, lat: la || undefined, lng: ln || undefined })} />
-          <div className="adm-checks">
-            <label>
-              <input type="checkbox" checked={!!stop.move} onChange={(e) => set('move', e.target.checked || undefined)} />
-              Move leg
-            </label>
-            <label>
-              <input type="checkbox" checked={!!stop.parking} onChange={(e) => set('parking', e.target.checked || undefined)} />
-              Parking
-            </label>
-            {stop.move && (
+            <div className="adm-row2">
               <label>
-                Via
-                <select value={stop.via || ''} onChange={(e) => set('via', e.target.value || undefined)}>
-                  <option value="">🚗 drive</option>
-                  <option value="train">🚆 train</option>
-                  <option value="flight">✈️ flight</option>
+                Time
+                <input value={stop.time || ''} placeholder="20:00" onChange={(e) => set('time', e.target.value || undefined)} />
+              </label>
+              <label>
+                Tag
+                <select value={stop.tag || ''} onChange={(e) => set('tag', e.target.value || undefined)}>
+                  <option value="">—</option>
+                  {TAGS.map((t) => <option key={t} value={t}>{TAG_LABEL[t]}</option>)}
                 </select>
               </label>
-            )}
+            </div>
+            <label>
+              Description
+              <textarea rows={3} value={stop.desc || ''} onChange={(e) => set('desc', e.target.value || undefined)} />
+            </label>
+          </div>
+          <div className="adm-stop-right">
+            <LocationField lat={stop.lat} lng={stop.lng} onSet={(la, ln) => onChange({ ...stop, lat: la || undefined, lng: ln || undefined })} />
+            <div className="adm-checks">
+              <label>
+                <input type="checkbox" checked={!!stop.move} onChange={(e) => set('move', e.target.checked || undefined)} />
+                Move leg
+              </label>
+              <label>
+                <input type="checkbox" checked={!!stop.parking} onChange={(e) => set('parking', e.target.checked || undefined)} />
+                Parking
+              </label>
+              {stop.move && (
+                <label>
+                  Via
+                  <select value={stop.via || ''} onChange={(e) => set('via', e.target.value || undefined)}>
+                    <option value="">🚗 drive</option>
+                    <option value="train">🚆 train</option>
+                    <option value="flight">✈️ flight</option>
+                  </select>
+                </label>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -196,7 +234,7 @@ function StopRow({
 }
 
 // ── Day editor ───────────────────────────────────────────────────────────────
-function DayEditor({ day, onChange, onDelete }: { day: DayRaw; onChange: (d: DayRaw) => void; onDelete: () => void }) {
+function DayEditor({ day, onChange, onDelete, id }: { day: DayRaw; onChange: (d: DayRaw) => void; onDelete: () => void; id?: string }) {
   const [open, setOpen] = useState(false)
   const set = (k: keyof DayRaw, v: unknown) => onChange({ ...day, [k]: v })
 
@@ -218,7 +256,7 @@ function DayEditor({ day, onChange, onDelete }: { day: DayRaw; onChange: (d: Day
   const addStop = () => set('stops', [...day.stops, { name: 'New stop' }])
 
   return (
-    <div className="adm-day">
+    <div className="adm-day" id={id}>
       <div className="adm-day-hd" onClick={() => setOpen((o) => !o)}>
         <b>Day {day.n}</b>
         <span className="adm-day-title">{day.dow} · {day.date} — {day.title}</span>
@@ -228,26 +266,32 @@ function DayEditor({ day, onChange, onDelete }: { day: DayRaw; onChange: (d: Day
 
       {open && (
         <div className="adm-day-body">
-          <div className="adm-row2">
-            <label>
-              📅 Date
-              <input type="date" value={day.iso || ''} onChange={(e) => setDate(e.target.value)} />
-            </label>
-            <div className="adm-derived">
-              {day.iso
-                ? <>→ {day.date} · {day.dow} · {day.en}</>
-                : 'pick a date'}
+          <div className="adm-day-meta">
+            <div className="adm-day-meta-left">
+              <div className="adm-row2">
+                <label>
+                  📅 Date
+                  <input type="date" value={day.iso || ''} onChange={(e) => setDate(e.target.value)} />
+                </label>
+                <div className="adm-derived">
+                  {day.iso
+                    ? <>→ {day.date} · {day.dow} · {day.en}</>
+                    : 'pick a date'}
+                </div>
+              </div>
+              <label>
+                Title (banner)
+                <input value={day.title} onChange={(e) => set('title', e.target.value)} />
+              </label>
+              <label>
+                Intro
+                <textarea rows={4} value={day.intro} onChange={(e) => set('intro', e.target.value)} />
+              </label>
+            </div>
+            <div className="adm-day-meta-right">
+              <PhotoField label="Hero photo" value={day.hero} onSet={(v) => set('hero', v)} />
             </div>
           </div>
-          <label>
-            Title (banner)
-            <input value={day.title} onChange={(e) => set('title', e.target.value)} />
-          </label>
-          <label>
-            Intro
-            <textarea rows={3} value={day.intro} onChange={(e) => set('intro', e.target.value)} />
-          </label>
-          <PhotoField label="Hero photo" value={day.hero} onSet={(v) => set('hero', v)} />
 
           <div className="adm-stops-hd">
             <b>Stops ({day.stops.length})</b>
@@ -330,13 +374,15 @@ function SpotSection({ title, list, onChange }: { title: string; list: SpotRaw[]
 }
 
 // ── Main admin ───────────────────────────────────────────────────────────────
-export default function Admin() {
+export default function Admin({ tripId }: { tripId: string }) {
   const [trip, setTrip] = useState<TripRaw>(() => {
-    const saved = localStorage.getItem('meroz-admin-draft-v2')
+    const saved = localStorage.getItem(`draft-${tripId}`)
     if (saved) return JSON.parse(saved)
-    return toRaw(rawTrip)
+    return toRaw(rawTrip ?? { meta: { lang: 'he' }, contact: {}, days: [], attractions: [], places: [] })
   })
   const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveErr, setSaveErr] = useState('')
   const [menu, setMenu] = useState(false)
   const [, force] = useState(0)
   const fileHandle = useRef<FileSystemFileHandle | null>(null)
@@ -369,16 +415,31 @@ export default function Admin() {
   // Autosave to the browser (and to the linked file when in dev) — no Save button needed.
   useEffect(() => {
     const id = setTimeout(() => {
-      localStorage.setItem('meroz-admin-draft-v2', JSON.stringify(trip))
+      localStorage.setItem(`draft-${tripId}`, JSON.stringify(trip))
+      const clean = toClean(trip)
+      localStorage.setItem(`preview-${tripId}`, JSON.stringify(clean))
       if (fileHandle.current) writeToFile(trip)
+      new BroadcastChannel(`meroz-trip-${tripId}`).postMessage(clean)
       setSaved(true)
       const t = setTimeout(() => setSaved(false), 1400)
       return () => clearTimeout(t)
     }, 500)
     return () => clearTimeout(id)
-  }, [trip, writeToFile])
+  }, [trip, tripId, writeToFile])
 
-  const exportJson = () => download(toClean(trip), 'trip.json')
+  const exportJson = () => download(toClean(trip), `${tripId}.json`)
+
+  const saveToCloud = async () => {
+    setSaving(true)
+    setSaveErr('')
+    try {
+      await saveTrip(tripId, toClean(trip))
+    } catch (e) {
+      setSaveErr(String(e))
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const [zipping, setZipping] = useState(false)
   const buildSiteZip = useCallback(async () => {
@@ -405,8 +466,8 @@ export default function Admin() {
         const r = await fetch(base + f)
         zip.file(f, await r.blob())
       }
-      zip.file('trip.json', JSON.stringify(toClean(trip), null, 2))
-      zip.file('_redirects', '/*    /index.html   200\n')
+      zip.file(`trips/${tripId}.json`, JSON.stringify(toClean(trip), null, 2))
+      zip.file('_redirects', '/trip/*    /index.html   200\n/admin/*   /index.html   200\n')
       const out = await zip.generateAsync({ type: 'blob' })
       const a = document.createElement('a')
       a.href = URL.createObjectURL(out)
@@ -421,8 +482,8 @@ export default function Admin() {
 
   const resetDraft = () => {
     if (!confirm('Discard your draft and reload the published trip.json?')) return
-    localStorage.removeItem('meroz-admin-draft-v2')
-    setTrip(toRaw(rawTrip))
+    localStorage.removeItem(`draft-${tripId}`)
+    setTrip(toRaw(rawTrip ?? { meta: { lang: 'he' }, contact: {}, days: [], attractions: [], places: [] }))
   }
 
   const importFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -450,12 +511,29 @@ export default function Admin() {
     setTrip({ ...trip, days: [...trip.days, { n, date: '', dow: '', en: '', iso: '', hero: '', title: '', intro: '', stops: [] }] })
   }
 
+  const navTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <div className="adm-root" dir="ltr">
       <div className="adm-topbar">
-        <h1>✏️ Trip Editor</h1>
+        <div className="adm-topbar-left">
+          <button className="adm-btn adm-back" onClick={() => location.href = '/admin'}>← Trips</button>
+          <h1>✏️ {tripId}</h1>
+        </div>
         <span className="adm-saved">{saved ? '✓ saved' : ''}</span>
         <div className="adm-actions">
+          <button className="adm-btn adm-save" onClick={saveToCloud} disabled={saving}>
+            {saving ? '⏳ Saving…' : '☁️ Save'}
+          </button>
+          {saveErr && <span style={{ color: '#f87171', fontSize: 12 }}>{saveErr}</span>}
+          <button className="adm-btn adm-preview" onClick={() => {
+            localStorage.setItem(`preview-${tripId}`, JSON.stringify(toClean(trip)))
+            window.open(`/trip/${tripId}?preview`, '_blank')
+          }}>
+            👁 Preview
+          </button>
           <button className="adm-btn adm-zip" onClick={buildSiteZip} disabled={zipping}>
             {zipping ? '📦 Packaging…' : '📦 Download site'}
           </button>
@@ -483,53 +561,104 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="adm-section">
-        <h2>Trip cover & details</h2>
-        <div className="adm-row2">
-          <label>Title<input value={trip.meta.title} onChange={(e) => setMeta('title', e.target.value)} /></label>
-          <label>Subtitle<input value={trip.meta.subtitle} onChange={(e) => setMeta('subtitle', e.target.value)} /></label>
-          <label>Country<input value={trip.meta.country} onChange={(e) => setMeta('country', e.target.value)} /></label>
-          <label>📅 Start date<input type="date" value={trip.meta.startISO} onChange={(e) => setMeta('startISO', e.target.value)} /></label>
-          <label>📅 End date<input type="date" value={trip.meta.endISO} onChange={(e) => setMeta('endISO', e.target.value)} /></label>
+      <div className="adm-body">
+        <aside className="adm-nav">
+          <div className="adm-nav-group">
+            <button onClick={() => navTo('adm-cover')}>Cover & Details</button>
+          </div>
+          <div className="adm-nav-group">
+            <div className="adm-nav-label">Days</div>
+            {trip.days.map((d) => (
+              <button key={d.n} onClick={() => navTo(`adm-day-${d.n}`)}>
+                <span className="adm-nav-badge">{d.n}</span>
+                <span className="adm-nav-day-title">{d.title || d.date || '…'}</span>
+              </button>
+            ))}
+            <button className="adm-nav-add" onClick={addDay}>+ Add day</button>
+          </div>
+          <div className="adm-nav-group">
+            <button onClick={() => navTo('adm-recs')}>Recommendations</button>
+            <button onClick={() => navTo('adm-contact')}>Contact</button>
+            <button onClick={() => navTo('adm-json')}>JSON Preview</button>
+          </div>
+        </aside>
+
+        <div className="adm-main">
+          <div id="adm-cover" className="adm-section">
+            <h2>Trip cover & details</h2>
+            <div className="adm-row3">
+              <label>Title<input value={trip.meta.title} onChange={(e) => setMeta('title', e.target.value)} /></label>
+              <label>Subtitle<input value={trip.meta.subtitle} onChange={(e) => setMeta('subtitle', e.target.value)} /></label>
+              <label>Country<input value={trip.meta.country} onChange={(e) => setMeta('country', e.target.value)} /></label>
+              <label>📅 Start date<input type="date" value={trip.meta.startISO} onChange={(e) => setMeta('startISO', e.target.value)} /></label>
+              <label>📅 End date<input type="date" value={trip.meta.endISO} onChange={(e) => setMeta('endISO', e.target.value)} /></label>
+              <label>Travellers line<input value={trip.meta.who} onChange={(e) => setMeta('who', e.target.value)} /></label>
+              <label>App language
+                <select value={trip.meta.lang ?? 'he'} onChange={(e) => setMeta('lang', e.target.value as 'he' | 'en')}>
+                  <option value="he">🇮🇱 Hebrew (עברית)</option>
+                  <option value="en">🇬🇧 English</option>
+                </select>
+              </label>
+            </div>
+            <PhotoField label="Cover photo" value={trip.meta.cover} onSet={(v) => setMeta('cover', v)} />
+          </div>
+
+          <div className="adm-section">
+            <div className="adm-stops-hd">
+              <h2>Days ({trip.days.length})</h2>
+            </div>
+            {trip.days.map((d, i) => (
+              <DayEditor key={i} id={`adm-day-${d.n}`} day={d} onChange={(nd) => setDay(i, nd)} onDelete={() => delDay(i)} />
+            ))}
+          </div>
+
+          <div id="adm-recs" className="adm-section">
+            <h2>Recommendations</h2>
+            <SpotSection title="⭐ Attractions (must-see)" list={trip.attractions} onChange={(l) => setTrip({ ...trip, attractions: l })} />
+            <SpotSection title="📍 Places" list={trip.places} onChange={(l) => setTrip({ ...trip, places: l })} />
+          </div>
+
+          <div id="adm-contact" className="adm-section">
+            <h2>Contact</h2>
+            <div className="adm-row3">
+              <label>Instagram<input value={trip.contact.instagram} onChange={(e) => setTrip({ ...trip, contact: { ...trip.contact, instagram: e.target.value } })} /></label>
+              <label>Phone IL<input value={trip.contact.phoneIL} onChange={(e) => setTrip({ ...trip, contact: { ...trip.contact, phoneIL: e.target.value, phoneILraw: e.target.value.replace(/[^+\d]/g, '') } })} /></label>
+              <label>Phone IT<input value={trip.contact.phoneIT} onChange={(e) => setTrip({ ...trip, contact: { ...trip.contact, phoneIT: e.target.value, phoneITraw: e.target.value.replace(/[^+\d]/g, '') } })} /></label>
+            </div>
+          </div>
+
+          <div className="adm-hint">
+            <b>📦 Make a customer site:</b> Build the trip above → click <b>Download site</b> →
+            you get a <code>.zip</code> → drag it onto <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">app.netlify.com/drop</a> → live in seconds.
+            Photos are embedded, so the zip is fully self-contained.
+            <br />
+            <span className="adm-hint-dim">
+              ({zipping ? 'packaging…' : 'Download site needs a built site — use it from the deployed/preview URL, not the dev server.'})
+            </span>
+          </div>
+
+          <div id="adm-json"><JsonPreview trip={trip} /></div>
         </div>
-        <label>Travellers line (shown on cover)<input value={trip.meta.who} onChange={(e) => setMeta('who', e.target.value)} /></label>
-        <PhotoField label="Cover photo" value={trip.meta.cover} onSet={(v) => setMeta('cover', v)} />
       </div>
+    </div>
+  )
+}
 
-      <div className="adm-section">
-        <div className="adm-stops-hd">
-          <h2>Days ({trip.days.length})</h2>
-          <button className="adm-btn adm-add" onClick={addDay}>+ Add day</button>
+function JsonPreview({ trip }: { trip: TripRaw }) {
+  const [open, setOpen] = useState(false)
+  const json = JSON.stringify(toClean(trip), null, 2)
+  const copy = () => navigator.clipboard.writeText(json)
+  return (
+    <div className="adm-json-preview">
+      <button className="adm-json-toggle" onClick={() => setOpen((o) => !o)}>
+        {open ? '▲' : '▼'} JSON Preview
+      </button>
+      {open && (
+        <div className="adm-json-body">
+          <button className="adm-json-copy" onClick={copy}>Copy</button>
+          <pre>{json}</pre>
         </div>
-        {trip.days.map((d, i) => (
-          <DayEditor key={i} day={d} onChange={(nd) => setDay(i, nd)} onDelete={() => delDay(i)} />
-        ))}
-      </div>
-
-      <div className="adm-section">
-        <h2>Recommendations</h2>
-        <SpotSection title="⭐ Attractions (must-see)" list={trip.attractions} onChange={(l) => setTrip({ ...trip, attractions: l })} />
-        <SpotSection title="📍 Places" list={trip.places} onChange={(l) => setTrip({ ...trip, places: l })} />
-      </div>
-
-      <div className="adm-section">
-        <h2>Contact</h2>
-        <div className="adm-row2">
-          <label>Instagram<input value={trip.contact.instagram} onChange={(e) => setTrip({ ...trip, contact: { ...trip.contact, instagram: e.target.value } })} /></label>
-          <label>Phone IL<input value={trip.contact.phoneIL} onChange={(e) => setTrip({ ...trip, contact: { ...trip.contact, phoneIL: e.target.value, phoneILraw: e.target.value.replace(/[^+\d]/g, '') } })} /></label>
-          <label>Phone IT<input value={trip.contact.phoneIT} onChange={(e) => setTrip({ ...trip, contact: { ...trip.contact, phoneIT: e.target.value, phoneITraw: e.target.value.replace(/[^+\d]/g, '') } })} /></label>
-        </div>
-      </div>
-
-      <div className="adm-hint">
-        <b>📦 Make a customer site:</b> Build the trip above → click <b>Download site</b> →
-        you get a <code>.zip</code> → drag it onto <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">app.netlify.com/drop</a> → live in seconds.
-        Photos are embedded, so the zip is fully self-contained.
-        <br />
-        <span className="adm-hint-dim">
-          ({zipping ? 'packaging…' : 'Download site needs a built site — use it from the deployed/preview URL, not the dev server.'})
-        </span>
-      </div>
+      )}
     </div>
   )
 }

@@ -34,6 +34,7 @@ export type TripMeta = {
   endISO: string     // yyyy-mm-dd, last day
   who: string        // travellers line shown on the cover
   cover: string      // cover image (filename | data: | http url)
+  lang: 'he' | 'en' // UI language — chosen by admin, not traveler
 }
 
 // "2026-06-22" → "22/06"
@@ -60,8 +61,9 @@ export const A = (f: string): string => {
 }
 
 // ── Live bindings — populated by initTrip() before the app renders ─────────────
+export let currentTripId: string = ''
 export let meta: TripMeta = {
-  title: '', subtitle: '', country: '', startISO: '', endISO: '', who: '', cover: ''
+  title: '', subtitle: '', country: '', startISO: '', endISO: '', who: '', cover: '', lang: 'he'
 }
 export let days: Day[] = []
 export let attractions: Spot[] = []
@@ -80,8 +82,9 @@ export function initTrip(raw: any) {
   places = (raw.places || []).map((s: any) => ({ ...s, img: A(s.img) }))
 }
 
-export async function loadTrip(): Promise<void> {
-  const res = await fetch(`${import.meta.env.BASE_URL}trip.json`, { cache: 'no-cache' })
-  if (!res.ok) throw new Error(`trip.json ${res.status}`)
+export async function loadTrip(tripId: string): Promise<void> {
+  currentTripId = tripId
+  const res = await fetch(`${import.meta.env.BASE_URL}trips/${tripId}.json`, { cache: 'no-cache' })
+  if (!res.ok) throw new Error(`trips/${tripId}.json ${res.status}`)
   initTrip(await res.json())
 }

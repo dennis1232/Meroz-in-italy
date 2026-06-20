@@ -25,6 +25,7 @@ export type TripRaw = {
     endISO: string
     who: string
     cover: string
+    lang: 'he' | 'en'
   }
   contact: {
     instagram: string
@@ -83,7 +84,7 @@ export function toRaw(data: any): TripRaw {
     lat: s.lat != null ? String(s.lat) : '', lng: s.lng != null ? String(s.lng) : ''
   })
   return {
-    meta: { ...data.meta },
+    meta: { lang: 'he', ...data.meta },
     contact: { ...data.contact },
     days: (data.days || []).map((day: any) => ({
       ...day,

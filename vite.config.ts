@@ -4,6 +4,16 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   base: '/',
+  server: {
+    port: 5173,
+    strictPort: true,
+    proxy: {
+      '/.netlify/functions': {
+        target: 'http://127.0.0.1:9999',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     react(),
     VitePWA({
@@ -35,7 +45,7 @@ export default defineConfig({
           {
             // trip data: always try network so a swapped trip.json shows up, but
             // fall back to cache when offline
-            urlPattern: ({ url }) => url.pathname.endsWith('/trip.json'),
+            urlPattern: ({ url }) => url.pathname.endsWith('/trip.json') || url.pathname.includes('/trips/'),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'trip-data',
@@ -43,11 +53,11 @@ export default defineConfig({
             }
           },
           {
-            // cache OpenStreetMap tiles as you view them (offline after first load)
-            urlPattern: /^https:\/\/[abc]\.tile\.openstreetmap\.org\/.*/i,
+            // cache map tiles (CARTO + OSM) as you view them (offline after first load)
+            urlPattern: /^https:\/\/([a-d]\.basemaps\.cartocdn\.com|[abc]\.tile\.openstreetmap\.org)\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'osm-tiles',
+              cacheName: 'map-tiles',
               expiration: { maxEntries: 1500, maxAgeSeconds: 60 * 60 * 24 * 60 },
               cacheableResponse: { statuses: [0, 200] }
             }
