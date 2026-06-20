@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { days, attractions, places, contact, type Day, type Stop, type Spot } from './data'
+import { days, attractions, places, contact, meta, A, ddmm, type Day, type Stop, type Spot } from './data'
 import Map from './Map'
+import Admin from './Admin'
 
 const BASE = import.meta.env.BASE_URL
 const logo = `${BASE}assets/logo.png`
@@ -17,7 +18,7 @@ const TAG_EMOJI: Record<string, string> = {
 
 const waze = (s: { lat: number; lng: number }) => `waze://?ll=${s.lat},${s.lng}&navigate=yes`
 
-type Tab = 'home' | 'trip' | 'map' | 'see' | 'more'
+type Tab = 'home' | 'trip' | 'map' | 'see' | 'more' | 'admin'
 
 const isIOS = typeof navigator !== 'undefined' && /iphone|ipad|ipod/i.test(navigator.userAgent)
 const isStandalone =
@@ -32,10 +33,14 @@ export default function App() {
 
   useEffect(() => {
     if (!isStandalone && !localStorage.getItem('meroz_intro_seen')) setShowIntro(true)
-    const _td = new Date()
-    const _tds = `${String(_td.getDate()).padStart(2,'0')}/${String(_td.getMonth()+1).padStart(2,'0')}`
-    const _tday = days.find(d => d.date === _tds)
-    if (_tday) { setTargetDay(_tday.n); setTab('trip') }
+    if (location.hash !== '#admin') {
+      const _td = new Date()
+      const _tds = `${String(_td.getDate()).padStart(2,'0')}/${String(_td.getMonth()+1).padStart(2,'0')}`
+      const _tday = days.find(d => d.date === _tds)
+      if (_tday) { setTargetDay(_tday.n); setTab('trip') }
+    } else {
+      setTab('admin')
+    }
     // Chrome (Android/desktop) fires this when the app is installable — capture for a 1-tap install
     const onPrompt = (e: any) => {
       e.preventDefault()
@@ -58,11 +63,12 @@ export default function App() {
 
   return (
     <div className="app">
-      {tab === 'home' && <Overview goToDay={goToDay} />}
-      {tab === 'trip' && <Itinerary targetDay={targetDay} />}
-      {tab === 'map' && <MapScreen />}
-      {tab === 'see' && <MustSee />}
-      {tab === 'more' && <More openIntro={() => setShowIntro(true)} />}
+      {tab === 'admin' && <Admin />}
+      {tab !== 'admin' && tab === 'home' && <Overview goToDay={goToDay} />}
+      {tab !== 'admin' && tab === 'trip' && <Itinerary targetDay={targetDay} />}
+      {tab !== 'admin' && tab === 'map' && <MapScreen />}
+      {tab !== 'admin' && tab === 'see' && <MustSee />}
+      {tab !== 'admin' && tab === 'more' && <More openIntro={() => setShowIntro(true)} />}
 
       <nav className="tabbar">
         <Tb id="home" t={tab} set={goTab} ic="🏠" label="בית" />
@@ -170,8 +176,10 @@ function IntroModal({
 /* ---------- OVERVIEW ---------- */
 function Overview({ goToDay }: { goToDay: (n: number) => void }) {
   const _now = new Date()
-  const _start = new Date('2026-06-22')
-  const _end = new Date('2026-07-05')
+  const _start = new Date(meta.startISO)
+  const _end = new Date(meta.endISO)
+  _end.setDate(_end.getDate() + 1) // endISO is the last day → make boundary exclusive
+  const _total = days.length
   const _day1 = _now >= _start && _now < _end
     ? Math.floor((_now.getTime() - _start.getTime()) / 86400000) + 1
     : null
@@ -180,16 +188,16 @@ function Overview({ goToDay }: { goToDay: (n: number) => void }) {
     : null
   return (
     <section className="screen active">
-      <div className="cover" style={{ backgroundImage: `url(${BASE}assets/cover.webp)` }}>
-        <img className="logo" src={logo} alt="Meroz In Italia" />
-        <div className="dates" dir="ltr">22/06 – 04/07</div>
-        <div className="who">שרון ודניס · טוסקנה &amp; רומא 🇮🇹</div>
+      <div className="cover" style={{ backgroundImage: `url(${A(meta.cover)})` }}>
+        <img className="logo" src={logo} alt={meta.title} />
+        <div className="dates" dir="ltr">{ddmm(meta.startISO)} – {ddmm(meta.endISO)}</div>
+        <div className="who">{meta.who}</div>
       </div>
       {_daysLeft !== null && (
         <div className="countdown">✈️ עוד <b>{_daysLeft}</b> ימים לטיסה!</div>
       )}
       {_day1 !== null && (
-        <div className="countdown in-trip">🇮🇹 יום <b>{_day1}</b> מתוך 13</div>
+        <div className="countdown in-trip">🇮🇹 יום <b>{_day1}</b> מתוך {_total}</div>
       )}
 
       <div className="section-script">
@@ -198,7 +206,7 @@ function Overview({ goToDay }: { goToDay: (n: number) => void }) {
       </div>
 
       <div className="polaroids">
-        {days.slice(0, 12).map((d) => (
+        {days.map((d) => (
           <button className="pola" key={d.n} onClick={() => goToDay(d.n)}>
             <img src={d.hero} alt={d.title} loading="lazy" />
             <div className="cap">{d.dow}</div>

@@ -33,6 +33,16 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         runtimeCaching: [
           {
+            // trip data: always try network so a swapped trip.json shows up, but
+            // fall back to cache when offline
+            urlPattern: ({ url }) => url.pathname.endsWith('/trip.json'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'trip-data',
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          },
+          {
             // cache OpenStreetMap tiles as you view them (offline after first load)
             urlPattern: /^https:\/\/[abc]\.tile\.openstreetmap\.org\/.*/i,
             handler: 'CacheFirst',
