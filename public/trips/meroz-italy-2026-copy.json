@@ -1,0 +1,1137 @@
+{
+  "meta": {
+    "lang": "he",
+    "title": "Meroz In Italia (copy)",
+    "subtitle": "טוסקנה & רומא",
+    "country": "Italy",
+    "startISO": "2026-06-22",
+    "endISO": "2026-07-04",
+    "who": "שרון ודניס · טוסקנה & רומא 🇮🇹",
+    "cover": "cover.webp"
+  },
+  "contact": {
+    "instagram": "meroz_in_toscana",
+    "phoneIL": "+972 54 461-4060",
+    "phoneILraw": "+972544614060",
+    "phoneIT": "+39 351 7231156",
+    "phoneITraw": "+393517231156"
+  },
+  "days": [
+    {
+      "n": 1,
+      "date": "22/06",
+      "dow": "יום שני",
+      "en": "June 22",
+      "iso": "2026-06-22",
+      "hero": "day01.webp",
+      "title": "BENVENUTI IN ITALIA 😊",
+      "intro": "ברוכים הבאים לאיטליה, לאחר הטיסה ניקח את הרכבת מתחנת הרכבת ברומא טרמיני ומשם נסע שעה וחצי לכיוון פירנצה, ברוכים הבאים לאחת הערים היפות באירופה – פירנצה. הזמנו לכם מסעדה מושלמת לארוחת ערב.",
+      "stops": [
+        {
+          "name": "TLV – FCO",
+          "time": "13:45",
+          "desc": "נחיתה ברומא",
+          "move": true,
+          "via": "flight"
+        },
+        {
+          "name": "Roma Fiumicino – Roma Termini",
+          "desc": "חצי שעה נסיעה ברכבת לאונרדו אקספרס לתחנה המרכזית",
+          "move": true,
+          "via": "train"
+        },
+        {
+          "name": "ITALO Train Roma Termini – Firenze SMN",
+          "time": "16:55–18:31",
+          "desc": "רכבת מהירה לפירנצה",
+          "move": true,
+          "via": "train",
+          "lat": 43.7764,
+          "lng": 11.248
+        },
+        {
+          "name": "Santa Croce 14 B&B",
+          "desc": "הגעה לעיר היפה בטוסקנה, צ׳ק אין והתארגנות קלה למלון",
+          "tag": "hotel",
+          "lat": 43.7686,
+          "lng": 11.262
+        },
+        {
+          "name": "Duomo di Firenze",
+          "desc": "הקתדרלה המרכזית של פירנצה, אחד הסמלים היפים ביותר של איטליה",
+          "tag": "site",
+          "lat": 43.7731,
+          "lng": 11.256
+        },
+        {
+          "name": "Antico Noè",
+          "time": "20:00",
+          "desc": "מסעדה מדהימה, בונה את התפריט לפי המשלוח היומי מהשוק",
+          "tag": "food",
+          "lat": 43.7706,
+          "lng": 11.2607
+        },
+        {
+          "name": "Sant'ambroggio",
+          "desc": "אזור מלא בברים כיפים",
+          "tag": "cafe",
+          "lat": 43.7702,
+          "lng": 11.2676
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "date": "23/06",
+      "dow": "יום שלישי",
+      "en": "June 23",
+      "iso": "2026-06-23",
+      "hero": "day02.webp",
+      "title": "FIRENZE",
+      "intro": "בונז׳ורנו מפירנצה היפיפייה, לפתוח את היום בקפה מצויין והסתובבות מסביב לכיכר הדואומו היפה ומשם לכיוון האופיצי. קפיצה קטנה אחורה בזמן לתקופת הרנסנס ופגישה עם כל ערש התרבות.",
+      "stops": [
+        {
+          "name": "Melaleuca Florence Bakery",
+          "desc": "בית קפה מעולה לפתוח את הבוקר",
+          "tag": "cafe",
+          "lat": 43.7686,
+          "lng": 11.2531
+        },
+        {
+          "name": "Uffizi Gallery",
+          "time": "10:00",
+          "desc": "גלריית האומנות מהחשובות בעולם",
+          "tag": "site",
+          "lat": 43.7678,
+          "lng": 11.2553
+        },
+        {
+          "name": "Vini e Vecchi Sapori",
+          "time": "13:30",
+          "desc": "ארוחת צהרים טוסקנית מעולה",
+          "tag": "food",
+          "lat": 43.7697,
+          "lng": 11.2566
+        },
+        {
+          "name": "Ponte Vecchio",
+          "desc": "הגשר המפורסם של העיר, מלא חנויות של זהב אולי שווה להתחדש בתכשיט חדש",
+          "tag": "site",
+          "lat": 43.768,
+          "lng": 11.2531
+        },
+        {
+          "name": "Terazza Vittorio Vettori",
+          "desc": "תצפית מושלמת על הגשר העתיק",
+          "tag": "site",
+          "lat": 43.7682,
+          "lng": 11.2536
+        },
+        {
+          "name": "La Carraia",
+          "desc": "אפשר בלי קינוח? אחת הגלידריות הטובות בעיר, גלידת פיסטוק אם אתם מבינים עניין",
+          "tag": "gelato",
+          "lat": 43.7693,
+          "lng": 11.2454
+        },
+        {
+          "name": "Via Santa Monaca 1, 50124 Firenze FI",
+          "desc": "מכונת צילום עתיקה בסגנון פיורנטיני",
+          "tag": "site",
+          "lat": 43.7679,
+          "lng": 11.2466
+        },
+        {
+          "name": "Santo spirito",
+          "desc": "אפריטיבו בכיכר, ממליצים מאוד פשוט להנות מהשקט ומהכיכר היפה",
+          "tag": "cafe",
+          "lat": 43.7666,
+          "lng": 11.2479
+        },
+        {
+          "name": "Volume",
+          "desc": "שבו פה לאפרטיבו בכיכר היפיפייה",
+          "tag": "cafe",
+          "lat": 43.7668,
+          "lng": 11.2483
+        },
+        {
+          "name": "Piazzale Michelangelo",
+          "time": "19:30",
+          "desc": "תצפית מדהימה בשעת בין ערביים על העיר הקסומה",
+          "tag": "site",
+          "lat": 43.7629,
+          "lng": 11.265
+        },
+        {
+          "name": "Gustapizza",
+          "desc": "פיצרייה מעולה לארוחת ערב",
+          "tag": "food",
+          "lat": 43.7662,
+          "lng": 11.2472
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "date": "24/06",
+      "dow": "יום רביעי",
+      "en": "June 24",
+      "iso": "2026-06-24",
+      "hero": "day03.webp",
+      "title": "FIRENZE · DAVID",
+      "intro": "בוקר טוב, להתחיל את הבוקר בנחת, יום נוסף להעמיק בפירנצה ולהרגיש את שיא הרנסנס, אם נחליט שנרצה נזמין כרטיסים למוזיאון של האקדמיה לפגישה זריזה עם הפסל של דוד ונמשיך להנות מאוכל טוב והקסם של העיר.",
+      "stops": [
+        {
+          "name": "Fedora",
+          "desc": "בית קפה כיפי של בוקר, קוראסון עם ריבת פטל יוצא מן הכלל",
+          "tag": "cafe",
+          "lat": 43.7708,
+          "lng": 11.2583
+        },
+        {
+          "name": "Galleria dell'Accademia",
+          "time": "10:00",
+          "desc": "אם נחליט שנרצה - מפגש עם דוד של מיכלאנג׳לו",
+          "tag": "site",
+          "lat": 43.777,
+          "lng": 11.2588
+        },
+        {
+          "name": "Piazza Republica",
+          "desc": "כיכר מרכזית בעיר, סניף ענק של זארה, וקרוסלת סוסים מהממת",
+          "tag": "site",
+          "lat": 43.7715,
+          "lng": 11.2546
+        },
+        {
+          "name": "Caffè Gilli",
+          "desc": "בית קפה ותיק ומעולה, ניתן לקחת קפה על הבר או בישיבה",
+          "tag": "cafe",
+          "lat": 43.7717,
+          "lng": 11.2547
+        },
+        {
+          "name": "Sapori Tosacni",
+          "desc": "אפשרות לארוחת צהריים קלילה, כריך טוסקני מקומי נהדר",
+          "tag": "food",
+          "lat": 43.772,
+          "lng": 11.255
+        },
+        {
+          "name": "Sinagoga e museo ebraico",
+          "desc": "בית הכנסת העתיק של פירנצה",
+          "tag": "site",
+          "lat": 43.7716,
+          "lng": 11.2658
+        },
+        {
+          "name": "Gelateria DE' Medici",
+          "desc": "גלידריה שאסור לוותר עליה",
+          "tag": "gelato",
+          "lat": 43.7795,
+          "lng": 11.2606
+        },
+        {
+          "name": "Mercato di Sant'Ambrogio",
+          "desc": "שוק מקומי חמוד",
+          "tag": "shop",
+          "lat": 43.7706,
+          "lng": 11.2676
+        },
+        {
+          "name": "Cafe Ciberò",
+          "time": "19:30",
+          "desc": "אחת הפסטות הטעימות ביותר שאכלנו",
+          "tag": "food",
+          "lat": 43.7709,
+          "lng": 11.2662
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "date": "25/06",
+      "dow": "יום חמישי",
+      "en": "June 25",
+      "iso": "2026-06-25",
+      "hero": "day04.webp",
+      "title": "SIENA",
+      "intro": "בוקר טוב, נשכיר את הרכב ונסע דרומה אל עבר סיינה, העיר תתחיל להתקשט לקראת מרוץ הפליו המפורסם בעיר, מרוץ סוסים שנערך פעמיים בשנה, מרוץ סוסים שיתרחש בכיכר פיאצה דל קאמפו. נמשיך לעבר קצת קניות באאוטלט ונגיע למנוחה במלון היפה שסגרנו בדרום טוסקנה וארוחת ערב.",
+      "stops": [
+        {
+          "name": "Via Maso Finiguerra 13 Firenze",
+          "time": "10:00",
+          "desc": "איסוף רכב",
+          "lat": 43.7745,
+          "lng": 11.2447
+        },
+        {
+          "name": "Firenze Santa Maria Novella – Siena",
+          "desc": "שעה ועשרים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Parking Santa Catarina",
+          "desc": "להחנות פה, לעבור את החומה ולעלות במדרגות הנעות למרכז העיר",
+          "parking": true,
+          "lat": 43.3146,
+          "lng": 11.3267
+        },
+        {
+          "name": "Siena",
+          "desc": "ביקור בעירה היפה לקראת שעות אחר הצהרים, עליה לקתדרלה ואפרול בכיכר דל קאמפו",
+          "tag": "site",
+          "lat": 43.3186,
+          "lng": 11.3319
+        },
+        {
+          "name": "Duomo di Siena",
+          "desc": "מאוד מומלץ להיכנס לפה",
+          "tag": "site",
+          "lat": 43.3175,
+          "lng": 11.3289
+        },
+        {
+          "name": "Palazzo Pubblico",
+          "desc": "תצפית יפיפייה מהמגדל – נדרש לעלות במדרגות",
+          "tag": "site",
+          "lat": 43.3184,
+          "lng": 11.3316
+        },
+        {
+          "name": "Il Bandierino",
+          "desc": "אפשרות לפיצה טובה לארוחת צהרים",
+          "tag": "food",
+          "lat": 43.3187,
+          "lng": 11.3322
+        },
+        {
+          "name": "Siena – Valdichiana Outlet Village",
+          "desc": "ארבעים וחמש דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Valdichiana Outlet Village",
+          "desc": "קניון אוטלט עם מחירים טובים",
+          "tag": "shop",
+          "lat": 43.1639,
+          "lng": 11.846
+        },
+        {
+          "name": "Valdichiana Outlet Village – Poggio Alla Sala",
+          "desc": "חצי שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Poggio Alla Sala",
+          "desc": "להנות מהמלון הנפלא שסגרנו",
+          "tag": "hotel",
+          "lat": 43.105,
+          "lng": 11.78
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "date": "26/06",
+      "dow": "יום שישי",
+      "en": "June 26",
+      "iso": "2026-06-26",
+      "hero": "day05.webp",
+      "title": "VAL D'ORCIA",
+      "intro": "יום מלא ביין ואוכל טוב.",
+      "stops": [
+        {
+          "name": "Poggio Alla Sala – Podere Il Casale",
+          "desc": "חצי שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Podere Il Casale",
+          "desc": "חנות גבינות, בית קפה ומסעדה אל מול תצפית מרהיבה ביופיה",
+          "tag": "food",
+          "lat": 43.0606,
+          "lng": 11.7188
+        },
+        {
+          "name": "Podere Il Casale – Palazzo Massaini",
+          "desc": "עשר דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Palazzo Massaini",
+          "desc": "עצירה ביקב ציורי, לקחת כוס יין ולטעום שמן זית, להנות מהנוף והחצר היפה",
+          "tag": "wine",
+          "lat": 43.0975,
+          "lng": 11.704
+        },
+        {
+          "name": "Palazzo Massaini – Pienza",
+          "desc": "עשר דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Caffè GM S.R.L.",
+          "desc": "לחובבי הקפה, עצירה נהדרת לקניה של פולים וטעימות קפה ד״ש חם לפיליפו",
+          "tag": "cafe",
+          "lat": 43.0785,
+          "lng": 11.6788
+        },
+        {
+          "name": "Parcheggio via degli archi",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.0772,
+          "lng": 11.6792
+        },
+        {
+          "name": "Pienza",
+          "desc": "עצירה בעיר המצוירת, הליכה ברחובות וארוחת צהרים",
+          "tag": "site",
+          "lat": 43.0786,
+          "lng": 11.679
+        },
+        {
+          "name": "Trattoria La Buca delle Fate",
+          "desc": "מסעדה מומלצת לארוחת צהרים פשוטה וטובה, אין צורך בהזמנה",
+          "tag": "food",
+          "lat": 43.0788,
+          "lng": 11.6786
+        },
+        {
+          "name": "La Bandita Town House Hotel",
+          "desc": "אפשרות למסעדה נוספת, קצת יותר פאנסי אבל וואו",
+          "tag": "food",
+          "lat": 43.0784,
+          "lng": 11.6779
+        },
+        {
+          "name": "Buongusto Gelateria",
+          "desc": "גלידריה מעולה",
+          "tag": "gelato",
+          "lat": 43.0789,
+          "lng": 11.6784
+        },
+        {
+          "name": "Idyllium",
+          "desc": "מקום מושלם לאפרטיבו מול הנוף של העמק מהחומות של פיינזה",
+          "tag": "cafe",
+          "lat": 43.0782,
+          "lng": 11.6796
+        },
+        {
+          "name": "Pienza – Bindella",
+          "desc": "חצי שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Bindella",
+          "time": "16:00",
+          "desc": "הגעה ליקב טעימות יין עם פלטת גבינות",
+          "tag": "wine",
+          "lat": 43.0925,
+          "lng": 11.7672
+        },
+        {
+          "name": "Bindella – Poggio Alla Sala",
+          "desc": "רבע שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Ristorante Poggiardelli",
+          "time": "20:30",
+          "desc": "ארוחת ערב טובה",
+          "tag": "food",
+          "lat": 43.105,
+          "lng": 11.78
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "date": "27/06",
+      "dow": "שבת",
+      "en": "June 27",
+      "iso": "2026-06-27",
+      "hero": "day06.webp",
+      "title": "E-BIKE · MONTEPULCIANO",
+      "intro": "יום של טבע, טיול אופנים בנופים המרהיבים של עמק האורצ׳יה, נתחיל מוקדם בבוקר כדי להימנע מהחום ואחרי זה נמשיך לטייל בין העיירות היפות של העמק ונגיע אל המקום המיוחד של המעיינות החמים, תאספו גבינות ויין מפינזה ותעשו פיקניק כיף אחר הצהרים 😊",
+      "stops": [
+        {
+          "name": "Precise Tale Poggio Alla Sala – E bike Pienza",
+          "desc": "חצי שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Parcheggio Seminario Vescovile",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.079,
+          "lng": 11.677
+        },
+        {
+          "name": "E bike Pienza",
+          "time": "09:30",
+          "desc": "טיול אופניים בדרכים המצוירות של טוסקנה",
+          "tag": "site",
+          "lat": 43.0786,
+          "lng": 11.679
+        },
+        {
+          "name": "E bike Pienza – Bagni San Filippo",
+          "desc": "חצי שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Bagni san filippo",
+          "desc": "מעיינות חמים יפיפיים, במידה ורוצים להיכנס להביא מגבות",
+          "tag": "site",
+          "lat": 42.929,
+          "lng": 11.7
+        },
+        {
+          "name": "Bagni San Filippo – Montepulciano",
+          "desc": "שלושים וחמש דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Parcheggio 1 - P1",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.0944,
+          "lng": 11.7825
+        },
+        {
+          "name": "Montepulciano",
+          "desc": "ביקור בעיירה היפה, הליכה ברחוב הראשי, חנויות יין ונקודות תצפית",
+          "tag": "site",
+          "lat": 43.0925,
+          "lng": 11.78
+        },
+        {
+          "name": "Salamoia Gelateria Naturale",
+          "desc": "חנות גלידות נהדרת",
+          "tag": "gelato",
+          "lat": 43.0928,
+          "lng": 11.7805
+        },
+        {
+          "name": "Caffè Poliziano",
+          "desc": "קפה מושלם עם נוף מהמם ומאפים מעולים, קצת יקר לישיבה",
+          "tag": "cafe",
+          "lat": 43.0931,
+          "lng": 11.7811
+        },
+        {
+          "name": "Piazza Grande",
+          "desc": "להגיע לכיכר היפיפייה הנמצאת בפסגת העיירה",
+          "tag": "site",
+          "lat": 43.0918,
+          "lng": 11.7826
+        },
+        {
+          "name": "Fortezza Medicea di Montepulciano",
+          "desc": "ניתן להיכנס למבצר לחנות יין ונוף מרשים הנמצא בפסגת העיירה",
+          "tag": "wine",
+          "lat": 43.0915,
+          "lng": 11.7831
+        },
+        {
+          "name": "Vicolo dei Cacciatori 1, 53045 Montepulciano SI",
+          "desc": "תצפית מושלמת על כל העמק",
+          "tag": "site",
+          "lat": 43.092,
+          "lng": 11.782
+        },
+        {
+          "name": "Ristorante Godimento Divino",
+          "desc": "מסעדה מושלמת לארוחת צהרים – דברו איתו שנזמין מקום",
+          "tag": "food",
+          "lat": 43.092,
+          "lng": 11.7818
+        },
+        {
+          "name": "Sanctuary of the Madonna di San Biagio",
+          "desc": "מבצר יפה עם נוף מקסים ליד העיירה",
+          "tag": "site",
+          "lat": 43.0879,
+          "lng": 11.7747
+        },
+        {
+          "name": "Montepulciano – Poggio Alla Sala",
+          "desc": "כרבע שעה נסיעה",
+          "move": true
+        },
+        {
+          "name": "Poggio Alla Sala",
+          "desc": "חזרה למלון ופשוט להנות מהמקום המקסים והמפנק שבחרתם!",
+          "tag": "hotel",
+          "lat": 43.105,
+          "lng": 11.78
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "date": "28/06",
+      "dow": "יום ראשון",
+      "en": "June 28",
+      "iso": "2026-06-28",
+      "hero": "day07.webp",
+      "title": "MONTERIGGIONI · SENTIERELSA",
+      "intro": "לצאת בנחת מהמלון, נסיעה מהממת מדרום טוסקנה לצפון טוסקנה, מסלול הליכה כיפי עם בריכות טורקיז ומפל בסופו, לאחר הצ׳ק אין שנעשה במלון נצא אל המסלול, נחזור למלון ונגיע להנות מהבריכה של המלון ומהעיירה היפה.",
+      "stops": [
+        {
+          "name": "Poggio Alla Sala – Agriturismo Baccoleno",
+          "desc": "ארבעים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Agriturismo Baccoleno",
+          "desc": "לחנות בשול, דרך ברושים מדהימה ואייקונית לעשות תמונה למזכרת",
+          "tag": "site",
+          "lat": 43.2143,
+          "lng": 11.5832
+        },
+        {
+          "name": "Agriturismo Baccoleno – Monteriggioni",
+          "desc": "כארבעים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Strada Comunale di Monteriggioni 3, 53035 Monteriggioni SI",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.3914,
+          "lng": 11.2236
+        },
+        {
+          "name": "Monteriggioni",
+          "desc": "ביקור בעיירת החומה הקטנה והיפה, שיטוט קצר במרכז העתיק ובין חומות האבן",
+          "tag": "site",
+          "lat": 43.3914,
+          "lng": 11.2236
+        },
+        {
+          "name": "Monteriggioni – Hotel Palazzo San Lorenzo",
+          "desc": "עשרים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Hotel Palazzo San Lorenzo",
+          "desc": "הגעה למלון המהמם שלכם",
+          "tag": "hotel",
+          "lat": 43.422,
+          "lng": 11.123
+        },
+        {
+          "name": "Hotel Palazzo San Lorenzo – Sentierelsa Trail",
+          "desc": "עשר דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Sentierelsa Trail",
+          "desc": "מסלול הליכה יפה עם בריכות טורקיז ומפל מים בסופו, 2 ק״מ לכיוון",
+          "tag": "site",
+          "lat": 43.4106,
+          "lng": 11.1268
+        },
+        {
+          "name": "Colle di Val d'Elsa",
+          "desc": "עיירה צמודה למסלול",
+          "tag": "site",
+          "lat": 43.4222,
+          "lng": 11.1245
+        },
+        {
+          "name": "Ristorante Milleluci \"Dietro le Quinte\"",
+          "desc": "אפשרות לארוחת ערב מסעדה מעולה שנמצא בעיירה ליד",
+          "tag": "food",
+          "lat": 43.4218,
+          "lng": 11.124
+        },
+        {
+          "name": "Hotel Palazzo San Lorenzo",
+          "desc": "חצי שעה נסיעה למלון",
+          "move": true
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "date": "29/06",
+      "dow": "יום שני",
+      "en": "June 29",
+      "iso": "2026-06-29",
+      "hero": "day08.webp",
+      "title": "CHIANTI",
+      "intro": "בוקר טוב, יום קסום בחבל קיאנטי נצא מוקדם ונעבור בין עיירות היין של חבל קיאנטי, נתחיל מקאסטלינה ומשם נמשיך אל עבר פאנזנו בה אנחנו נתחיל בחגיגה של בשרים ויין אצל המסעדה של דריו. נמשיך לעבר יקב מושלם ונשתה קפה בראדה בקיאנטי. משם נחזור למנוחה במלון.",
+      "stops": [
+        {
+          "name": "Hotel Palazzo San Lorenzo & Spa – Castellina in Chianti",
+          "desc": "ארבעים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Via del Cantinone 1, Castellina in Chianti",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.4691,
+          "lng": 11.2867
+        },
+        {
+          "name": "Castellina in Chianti",
+          "desc": "ביקור בעיירה היפה, הסתובבות בין החנויות ולהנות מהנוף המושלם",
+          "tag": "site",
+          "lat": 43.4691,
+          "lng": 11.2867
+        },
+        {
+          "name": "SR 222 Chiantigiana 12, 50022 Panzano In Chianti FI",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.547,
+          "lng": 11.317
+        },
+        {
+          "name": "Officina della Bistecca",
+          "time": "12:30",
+          "desc": "חגיגת בשרים ויין על שולחנות אבירים במסעדה של דריו",
+          "tag": "food",
+          "lat": 43.5472,
+          "lng": 11.3171
+        },
+        {
+          "name": "Officina della Bistecca – Castello di Albola",
+          "desc": "עשר דק' נסיעה",
+          "move": true
+        },
+        {
+          "name": "Castello di Albola",
+          "time": "16:00",
+          "desc": "אפשרות לעבור ביקב המהמם לכוס יין מול הכרמים היפים הירוקים",
+          "tag": "wine",
+          "lat": 43.5197,
+          "lng": 11.397
+        },
+        {
+          "name": "Castello di Albola – Radda in Chianti",
+          "desc": "עשר דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Radda in Chianti",
+          "desc": "אפשרות לעיירה חמודה לשתות בה קפה על הבוקר",
+          "tag": "site",
+          "lat": 43.484,
+          "lng": 11.376
+        },
+        {
+          "name": "Radda in Chianti – Hotel Palazzo San Lorenzo",
+          "desc": "עשרים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Hotel Palazzo San Lorenzo",
+          "desc": "מנוחה במלון היפה שסגרנו לאחר משתה היין והבשרים, מנוחה בבריכה במלון",
+          "tag": "hotel",
+          "lat": 43.422,
+          "lng": 11.123
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "date": "30/06",
+      "dow": "יום שלישי",
+      "en": "June 30",
+      "iso": "2026-06-30",
+      "hero": "day09.webp",
+      "title": "VOLTERRA · SAN GIMIGNANO",
+      "intro": "בוקר טוב בוא תלמדו קצת מסודותיו של המטבח האיטלקי, ביקור בעירה הקטנה וולטרה בה צולם הסרט דמדומים וקפיצה בחזרה לימי הביניים דרך מגדלי סאן ג׳ימיניאנו ולא לשכוח מאחת הגלידות הטובות בעולם 😊",
+      "stops": [
+        {
+          "name": "Hotel Palazzo San Lorenzo & Spa – Agriturismo Biologico Diacceroni",
+          "desc": "חמישים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Agriturismo Diacceroni Corso di Pasta",
+          "time": "10:30",
+          "desc": "קורס פסטה מול הנוף המדהים",
+          "tag": "food",
+          "lat": 43.3667,
+          "lng": 10.9667
+        },
+        {
+          "name": "Agriturismo Biologico Diacceroni – Volterra",
+          "desc": "עשרים וחמש דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Piazza Martiri della Libertà, 56048 Volterra PI",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.401,
+          "lng": 10.8589
+        },
+        {
+          "name": "Volterra",
+          "desc": "ביקור בעיירה העתיקה והיפה, נוף מושלם והסתובבות בין השרידים של העת העתיקה",
+          "tag": "site",
+          "lat": 43.401,
+          "lng": 10.86
+        },
+        {
+          "name": "L'isola del Gusto Gelateria",
+          "desc": "גלידה טעימה",
+          "tag": "gelato",
+          "lat": 43.4019,
+          "lng": 10.8606
+        },
+        {
+          "name": "Teatro Romano di Volterra",
+          "desc": "עתיקות האמפיתיאטרו, לא חובה לעבור פה",
+          "tag": "site",
+          "lat": 43.4045,
+          "lng": 10.8589
+        },
+        {
+          "name": "Piazza XX Settembre 25, 56048 Volterra PI",
+          "desc": "נקודת תצפית יפה",
+          "tag": "site",
+          "lat": 43.402,
+          "lng": 10.861
+        },
+        {
+          "name": "Volterra – San Gimignano",
+          "desc": "ארבעים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Parcheggio 2 Montemaggio",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 43.4665,
+          "lng": 11.0455
+        },
+        {
+          "name": "San Gimignano",
+          "desc": "עיירה המוקפת בחומה, נוף מדהים וקפיצה לימי הביניים",
+          "tag": "site",
+          "lat": 43.4677,
+          "lng": 11.0431
+        },
+        {
+          "name": "Torre Chigi",
+          "desc": "במידה ופתוח ביום זה בשל חג הפסחא, ניתן לעלות ולראות את הנוף",
+          "tag": "site",
+          "lat": 43.4675,
+          "lng": 11.0435
+        },
+        {
+          "name": "Via Degli Innocenti 3, 53037 San Gimignano SI",
+          "desc": "תצפית מהממת על כל האזור",
+          "tag": "site",
+          "lat": 43.4681,
+          "lng": 11.0429
+        },
+        {
+          "name": "Gelateria Dondoli",
+          "desc": "לטעום מאחת הגלידות הטובות בעולם, ממוקמת ממול לבאר",
+          "tag": "gelato",
+          "lat": 43.4676,
+          "lng": 11.0428
+        },
+        {
+          "name": "Vini di Toscana",
+          "desc": "חנות יין נהדרת",
+          "tag": "wine",
+          "lat": 43.4678,
+          "lng": 11.043
+        },
+        {
+          "name": "San Gimignano – Hotel Palazzo San Lorenzo & Spa",
+          "desc": "עשרים דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Hotel Palazzo San Lorenzo",
+          "desc": "הגעה למלון ומנוחה בו",
+          "tag": "hotel",
+          "lat": 43.422,
+          "lng": 11.123
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "date": "01/07",
+      "dow": "יום רביעי",
+      "en": "July 1",
+      "iso": "2026-07-01",
+      "hero": "day10.webp",
+      "title": "ORVIETO → ROMA",
+      "intro": "בוקר טוב, יום אחרון שלנו בחבל קיאנטי, נעבור בעצירה קטנה בחבל אומבריה בעיירה אורבייטו המצתפת על כל העמק שנמצא מסביב ומשם כל הדרכים מובילות אל רומא 😊",
+      "stops": [
+        {
+          "name": "Hotel Palazzo San Lorenzo & Spa – Orvieto",
+          "desc": "כשעתיים וחצי נסיעה",
+          "move": true
+        },
+        {
+          "name": "Via Belisario 10, 05018 Orvieto TR",
+          "desc": "להחנות פה",
+          "parking": true,
+          "lat": 42.7185,
+          "lng": 12.112
+        },
+        {
+          "name": "Orvieto",
+          "desc": "הצצה קטנה באומבריה, עיירה חמודה מאוד לעצירה באמצע הדרך",
+          "tag": "site",
+          "lat": 42.7185,
+          "lng": 12.1107
+        },
+        {
+          "name": "Duomo di Orvieto",
+          "desc": "לעבור בפיאצה היפה ולראות את הקתדרלה המיוחדת בעיר",
+          "tag": "site",
+          "lat": 42.717,
+          "lng": 12.113
+        },
+        {
+          "name": "Trattoria La Palomba",
+          "desc": "מסעדה מעולה לארוחת צהריים",
+          "tag": "food",
+          "lat": 42.7175,
+          "lng": 12.1095
+        },
+        {
+          "name": "Orvieto – Civita di Bagnoregio",
+          "desc": "שלושים וחמש דקות נסיעה",
+          "move": true
+        },
+        {
+          "name": "Civita di Bagnoregio",
+          "desc": "אפשרות לעצירה ונקודות תצפית מהממת",
+          "tag": "site",
+          "lat": 42.6275,
+          "lng": 12.114
+        },
+        {
+          "name": "Civita di Bagnoregio – Roma Termini",
+          "desc": "כשעתיים נסיעה",
+          "move": true
+        },
+        {
+          "name": "Roma Termini",
+          "desc": "להחזיר את הרכב",
+          "lat": 41.9009,
+          "lng": 12.5021
+        },
+        {
+          "name": "Hotel 55 Fifty-Five – Maison d'Art Collection",
+          "desc": "מלון ברומא",
+          "tag": "hotel",
+          "lat": 41.8954,
+          "lng": 12.4943
+        },
+        {
+          "name": "La Nuova Piazzetta",
+          "desc": "אפשרות לארוחת ערב נפלאה ליד הקולוסיאום",
+          "tag": "food",
+          "lat": 41.8896,
+          "lng": 12.4953
+        },
+        {
+          "name": "Colosseo",
+          "desc": "הליכה למרגלות הקולוסיאום המפורסם של רומא המואר באור מושלם בלילה",
+          "tag": "site",
+          "lat": 41.8902,
+          "lng": 12.4922
+        }
+      ]
+    },
+    {
+      "n": 11,
+      "date": "02/07",
+      "dow": "יום חמישי",
+      "en": "July 2",
+      "iso": "2026-07-02",
+      "hero": "day11.webp",
+      "title": "ROMA",
+      "intro": "Buongiorno",
+      "stops": [
+        {
+          "name": "United Colors",
+          "desc": "מומלץ לעלות לחנות בגדים בקומה 1 שממולה כדי לראות את הנוף",
+          "tag": "shop",
+          "lat": 41.8919,
+          "lng": 12.4895
+        },
+        {
+          "name": "Piccolo arancio",
+          "desc": "מסעדה מעולה במרחק עשר דקות הליכה מהמלון",
+          "tag": "food",
+          "lat": 41.9009,
+          "lng": 12.4853
+        }
+      ]
+    },
+    {
+      "n": 12,
+      "date": "03/07",
+      "dow": "יום שישי",
+      "en": "July 3",
+      "iso": "2026-07-03",
+      "hero": "day12.webp",
+      "title": "ROMA",
+      "intro": "",
+      "stops": [
+        {
+          "name": "LUNA by Faro - Caffè Specialty",
+          "desc": "בית קפה עם מאפים מעולים",
+          "tag": "cafe",
+          "lat": 41.9007,
+          "lng": 12.4985
+        },
+        {
+          "name": "Mercato Centrale",
+          "desc": "אפשרות לאכול בשוק האוכל של רומא ארוחת צהריים",
+          "tag": "food",
+          "lat": 41.9009,
+          "lng": 12.5119
+        }
+      ]
+    },
+    {
+      "n": 13,
+      "date": "04/07",
+      "dow": "שבת",
+      "en": "July 4",
+      "iso": "2026-07-04",
+      "hero": "day13.webp",
+      "title": "ARRIVEDERCI 😊",
+      "intro": "Grazie e arrivederci 😊 תודה שטיילתם איתנו!",
+      "stops": [
+        {
+          "name": "Roma – TLV",
+          "time": "18:45",
+          "desc": "טיסה חזרה הביתה",
+          "move": true,
+          "via": "flight"
+        }
+      ]
+    }
+  ],
+  "attractions": [
+    {
+      "name": "Cappella Vitaleta",
+      "he": "קפלה ויטלטה",
+      "desc": "קפלה ויטלטה היא כנסייה קטנה וציורית בטוסקנה, מוקפת גבעות ירוקות וברושים. עם האדריכלות הפשוטה והקסומה שלה, היא אחד האתרים האיקוניים ביותר באזור, ומושכת מבקרים בזכות השלווה והיופי של מיקומה.",
+      "img": "attr-vitaleta.webp",
+      "lat": 43.0717,
+      "lng": 11.6526
+    },
+    {
+      "name": "Piazzale Michelangelo",
+      "he": "פיאצלה מיכלאנג'לו",
+      "desc": "זו כיכר מפורסמת בזכות הנוף הפנורמי שלה של העיר והאתרים כמו הדואומו וגשר פונטה וקיו. היא תוכננה בשנת 1869 ומכילה העתקים של יצירות מיכלאנג׳לו כולל \"דוד\". זהו אתר תיירותי פופולרי לצפייה בשקיעה.",
+      "img": "attr-piazzale.webp",
+      "lat": 43.7629,
+      "lng": 11.265
+    },
+    {
+      "name": "Duomo di Siena",
+      "he": "דואומו די סיינה",
+      "desc": "אסונטה, היא קתדרלה גותית מרשימה באיטליה, המפורסמת בחזית השיש שלה בלבן, ורוד ושחור. הפנים מעוטר בעושר עם פסיפסים, פסלים של אמנים מפורסמים וספריית פיקולומיני עם ציורי קיר תוססים. המתחם כולל גם קריפטה עם ציורי קיר מימי הביניים ובפטיסטריום של יוחנן המטביל. זהו סמל חשוב לאמנות והיסטוריה של סיינה.",
+      "img": "attr-siena.webp",
+      "lat": 43.3175,
+      "lng": 11.3289
+    },
+    {
+      "name": "Gelateria Dondoli",
+      "he": "גלטריה דונדולי",
+      "desc": "גלטריה דונדולי היא גלידרייה מפורסמת הממוקמת בסן ג׳ימיניאנו, עיר מימי הביניים ציורית באזור טוסקנה, איטליה. הגלידרייה, שנוסדה על ידי סרג׳יו דונדולי, זכתה להכרה עולמית בזכות האיכות היוצאת מן הכלל של הגלידות המיוצרות בעבודת יד ושילובי הטעמים החדשניים שלה.",
+      "img": "attr-dondoli.webp",
+      "lat": 43.4676,
+      "lng": 11.0428
+    }
+  ],
+  "places": [
+    {
+      "name": "Bagno Vignoni",
+      "he": "באניו ויניוני",
+      "desc": "כיכר-בריכה תרמית ייחודית בלב הכפר.",
+      "img": "place-bagnovignoni.webp",
+      "lat": 43.029,
+      "lng": 11.618
+    },
+    {
+      "name": "Volterra",
+      "he": "וולטרה",
+      "desc": "עיר אטרוסקית עתיקה עם נוף מושלם.",
+      "img": "place-volterra.webp",
+      "lat": 43.401,
+      "lng": 10.86
+    },
+    {
+      "name": "Radda in Chianti",
+      "he": "ראדה אין קיאנטי",
+      "desc": "לב חבל היין קיאנטי, כרמים אינסופיים.",
+      "img": "place-radda.webp",
+      "lat": 43.484,
+      "lng": 11.376
+    },
+    {
+      "name": "Sentierelsa Trail",
+      "he": "מסלול סנטיירלסה",
+      "desc": "מסלול הליכה עם בריכות טורקיז ומפל.",
+      "img": "place-sentierelsa.webp",
+      "lat": 43.4106,
+      "lng": 11.1268
+    },
+    {
+      "name": "Pienza",
+      "he": "פיינצה",
+      "desc": "העיר ה\"מצוירת\" של עמק האורצ׳יה.",
+      "img": "place-pienza.webp",
+      "lat": 43.0786,
+      "lng": 11.679
+    },
+    {
+      "name": "Pitigliano",
+      "he": "פיטיליאנו",
+      "desc": "עיירת טוף מרשימה הבנויה על צוק.",
+      "img": "place-pitigliano.webp",
+      "lat": 42.636,
+      "lng": 11.668
+    },
+    {
+      "name": "Pisa",
+      "he": "פיזה",
+      "desc": "המגדל הנטוי המפורסם.",
+      "img": "place-pisa.webp",
+      "lat": 43.723,
+      "lng": 10.3966
+    },
+    {
+      "name": "San Gimignano",
+      "he": "סן ג׳ימיניאנו",
+      "desc": "עיר המגדלים מימי הביניים.",
+      "img": "place-sangimignano.webp",
+      "lat": 43.4677,
+      "lng": 11.0431
+    },
+    {
+      "name": "Asciano",
+      "he": "אשיאנו",
+      "desc": "נוף ה\"קרטה סנזי\" – גבעות ודרכי ברושים.",
+      "img": "place-asciano.webp",
+      "lat": 43.233,
+      "lng": 11.561
+    }
+  ]
+}
