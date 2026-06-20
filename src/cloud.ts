@@ -1,33 +1,23 @@
-function readFileBase64(file: File): Promise<{ data: string; mime: string }> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      const result = reader.result as string
-      const comma = result.indexOf(',')
-      resolve({
-        data: comma >= 0 ? result.slice(comma + 1) : result,
-        mime: file.type || 'image/jpeg',
-      })
-    }
-    reader.onerror = () => reject(reader.error ?? new Error('Could not read file'))
-    reader.readAsDataURL(file)
-  })
-}
-
-// Upload via Netlify function — reads CLOUDINARY_* from env at request time
+// Direct browser upload — uses VITE_CLOUDINARY_* from .env (local) or Netlify build env
 export async function uploadImage(file: File): Promise<string> {
-  const { data, mime } = await readFileBase64(file)
-  const res = await fetch('/.netlify/functions/upload-image', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data, mime }),
-  })
-  if (!res.ok) {
-    const msg = await res.text()
-    throw new Error(msg || `Upload failed: ${res.status}`)
+  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
+  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
+  if (!cloud || !preset) {
+    throw new Error('Missing Cloudinary env')
   }
-  const json = await res.json()
-  return json.url as string
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('upload_preset', preset)
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloud}/image/upload`,
+    { method: 'POST', body: fd }
+  )
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const msg = (json as { error?: { message?: string } }).error?.message
+    throw new Error(msg ? `Cloudinary: ${msg}` : `Cloudinary upload failed: ${res.status}`)
+  }
+  return json.secure_url as string
 }
 
 // Save trip JSON to GitHub via Netlify function

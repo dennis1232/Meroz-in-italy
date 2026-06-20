@@ -5,6 +5,12 @@ import { fileToDataUrl } from '../utils'
 
 type Props = { label: string; value: string; onSet: (v: string) => void }
 
+function hasCloudUpload() {
+  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
+  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
+  return !!(cloud && preset)
+}
+
 export default function PhotoField({ label, value, onSet }: Props) {
   const [busy, setBusy] = useState(false)
   const [uploadErr, setUploadErr] = useState('')
@@ -15,16 +21,10 @@ export default function PhotoField({ label, value, onSet }: Props) {
     setBusy(true)
     setUploadErr('')
     try {
-      try {
+      if (hasCloudUpload()) {
         onSet(await uploadImage(file))
-      } catch (err) {
-        const msg = String(err)
-        // Only fall back when Cloudinary isn't configured on the server
-        if (msg.includes('Missing Cloudinary env') || msg.includes(': 503')) {
-          onSet(await fileToDataUrl(file))
-        } else {
-          throw err
-        }
+      } else {
+        onSet(await fileToDataUrl(file))
       }
     } catch (err) {
       setUploadErr(String(err))

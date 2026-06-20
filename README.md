@@ -72,8 +72,8 @@ These environment variables must be configured in **Netlify** (and in a local `.
 | `GITHUB_TOKEN` | GitHub personal access token with **Contents: Read and write** on the repo |
 | `GITHUB_OWNER` | GitHub username or org |
 | `GITHUB_REPO` | Repository name (case-sensitive) |
-| `CLOUDINARY_CLOUD` or `VITE_CLOUDINARY_CLOUD` | Cloudinary cloud name (for image uploads) |
-| `CLOUDINARY_PRESET` or `VITE_CLOUDINARY_PRESET` | Cloudinary **unsigned** upload preset name |
+| `VITE_CLOUDINARY_CLOUD` | Cloudinary cloud name — baked into the app at **build** time |
+| `VITE_CLOUDINARY_PRESET` | Cloudinary **unsigned** upload preset — also set at build time |
 
 Set these in **Netlify → Site settings → Environment variables**. The `.env` file in the repo is for local dev only — Netlify does not read it from git.
 
@@ -289,7 +289,7 @@ The **Info → Driving tips** section (Telepass, ZTL zones, Waze, speed cameras,
 | **Missing GITHUB_TOKEN…** | Env vars not set | Add GitHub credentials to `.env` (local) or Netlify dashboard (production) |
 | **GitHub GET …/undefined/undefined…** | `GITHUB_OWNER` or `GITHUB_REPO` missing | Check `.env` values match your repo exactly |
 | **Duplicate / rename / delete fails** | Same as Save — needs Netlify functions + GitHub | Use deployed site or `npm run dev:netlify` |
-| **Cloudinary upload failed** | Env vars missing, wrong names, or preset not unsigned | Add `VITE_CLOUDINARY_CLOUD` + `VITE_CLOUDINARY_PRESET` in Netlify dashboard (same names as local `.env`) |
+| **Cloudinary upload failed** | Wrong preset, not unsigned, or stale deploy | Check preset in Cloudinary dashboard, then **trigger a new Netlify deploy** so `VITE_*` vars are baked in |
 | **Trip already exists** | Duplicate target ID is taken | Pick a different trip ID |
 | **Travelers see old content** | Netlify hasn't redeployed yet | Wait 1–2 min after Save, or hard-refresh |
 | **Preview works but live trip is empty** | Never clicked Save | Click **☁️ Save** to publish |
