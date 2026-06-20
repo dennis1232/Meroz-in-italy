@@ -25,7 +25,11 @@ function showNotFound() {
   root.render(<React.StrictMode><NotFound /></React.StrictMode>)
 }
 
-if (segments[0] === 'admin' && segments.length === 1) {
+// Only /trip/{id} is a valid traveler route — never redirect to another trip
+if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
+  showNotFound()
+
+} else if (segments[0] === 'admin' && segments.length === 1) {
   root.render(<React.StrictMode><AdminHome /></React.StrictMode>)
 
 } else if (segments[0] === 'admin' && segments.length >= 2) {

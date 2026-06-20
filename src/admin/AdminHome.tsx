@@ -61,10 +61,17 @@ export default function AdminHome() {
     ? trips.filter(t => t.title.toLowerCase().includes(q) || t.id.toLowerCase().includes(q))
     : trips
 
-  const reload = useCallback(() => {
-    return fetch(`${import.meta.env.BASE_URL}trips/index.json`, { cache: 'no-cache' })
-      .then(r => { if (!r.ok) throw new Error(r.status.toString()); return r.json() })
-      .then(setTrips)
+  const reload = useCallback(async () => {
+    try {
+      const res = await fetch('/.netlify/functions/list-trips', { cache: 'no-cache' })
+      if (res.ok) {
+        setTrips(await res.json())
+        return
+      }
+    } catch { /* local dev without functions */ }
+    const res = await fetch(`${import.meta.env.BASE_URL}trips/index.json`, { cache: 'no-cache' })
+    if (!res.ok) throw new Error(res.status.toString())
+    setTrips(await res.json())
   }, [])
 
   useEffect(() => {

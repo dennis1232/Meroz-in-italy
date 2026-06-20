@@ -30,9 +30,9 @@ function localConfig(): CloudConfig | null {
   return null
 }
 
-/** Saved browser settings win over .env — avoids .env example values overriding a working preset. */
+/** .env wins when set; localStorage is fallback only. */
 export function getCloudConfig(): CloudConfig | null {
-  return localConfig() ?? envConfig()
+  return envConfig() ?? localConfig()
 }
 
 export async function uploadImage(file: File): Promise<string> {

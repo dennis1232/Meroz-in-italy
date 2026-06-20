@@ -322,6 +322,7 @@ netlify/functions/
 |------|-----------|
 | `/` | 404 — no default trip |
 | `/trip/{id}` | Traveler app (404 if trip JSON missing) |
+| `/trips/index.json` | Blocked (404) — trip list is admin-only |
 | `/trip/{id}?preview` | Preview from localStorage draft |
 | `/admin` | Trip list |
 | `/admin/{id}` | Trip editor |

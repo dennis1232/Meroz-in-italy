@@ -1,2 +1,4 @@
-/trip/*    /index.html   200
-/admin/*   /index.html   200
+/trips/index.json  /index.html  404
+/trip/*            /index.html  200
+/admin/*           /index.html  200
+/*                 /index.html  200

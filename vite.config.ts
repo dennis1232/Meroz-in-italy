@@ -45,7 +45,10 @@ export default defineConfig({
           {
             // trip data: always try network so a swapped trip.json shows up, but
             // fall back to cache when offline
-            urlPattern: ({ url }) => url.pathname.endsWith('/trip.json') || url.pathname.includes('/trips/'),
+            urlPattern: ({ url }) => {
+              if (url.pathname.endsWith('/trips/index.json')) return false
+              return url.pathname.endsWith('/trip.json') || /\/trips\/[^/]+\.json$/.test(url.pathname)
+            },
             handler: 'NetworkFirst',
             options: {
               cacheName: 'trip-data',
