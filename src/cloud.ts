@@ -38,3 +38,21 @@ export async function saveTrip(tripId: string, tripData: unknown): Promise<void>
     throw new Error(`Save failed: ${msg}`)
   }
 }
+
+type ManageTripBody =
+  | { action: 'rename'; tripId: string; title: string }
+  | { action: 'delete'; tripId: string }
+  | { action: 'duplicate'; tripId: string; newTripId: string; title?: string }
+
+export async function manageTrip(body: ManageTripBody): Promise<{ newTripId?: string; title?: string }> {
+  const res = await fetch('/.netlify/functions/trip-manage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const msg = await res.text()
+    throw new Error(msg)
+  }
+  return res.json()
+}

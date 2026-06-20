@@ -111,6 +111,7 @@ export function toClean(raw: TripRaw) {
     const lat = num(s.lat), lng = num(s.lng)
     if (lat != null) o.lat = lat
     if (lng != null) o.lng = lng
+    if (s.mapLink) o.mapLink = s.mapLink
     return o
   }
   return {
@@ -130,6 +131,7 @@ export function toClean(raw: TripRaw) {
         const lat = num(s.lat || ''), lng = num(s.lng || '')
         if (lat != null) stop.lat = lat
         if (lng != null) stop.lng = lng
+        if (s.mapLink) stop.mapLink = s.mapLink
         return stop
       })
     })),

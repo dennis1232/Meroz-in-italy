@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import Admin from './Admin'
-import AdminHome from './AdminHome'
+import Admin from './admin/Admin'
+import AdminHome from './admin/AdminHome'
 import { loadTrip, initTrip } from './data'
 
 // bundled fonts (work offline)

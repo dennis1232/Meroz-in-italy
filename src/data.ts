@@ -10,6 +10,7 @@ export type Stop = {
   parking?: boolean
   lat?: number
   lng?: number
+  mapLink?: string
 }
 
 export type Day = {
@@ -24,7 +25,7 @@ export type Day = {
   stops: Stop[]
 }
 
-export type Spot = { name: string; he: string; desc: string; img: string; lat: number; lng: number }
+export type Spot = { name: string; he: string; desc: string; img: string; lat: number; lng: number; mapLink?: string }
 
 export type TripMeta = {
   title: string
