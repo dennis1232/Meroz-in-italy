@@ -1,15 +1,9 @@
 import { useState } from 'react'
 import { A } from '../../data'
-import { uploadImage } from '../../cloud'
+import { getCloudConfig, uploadImage } from '../../cloud'
 import { fileToDataUrl } from '../utils'
 
 type Props = { label: string; value: string; onSet: (v: string) => void }
-
-function hasCloudUpload() {
-  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
-  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
-  return !!(cloud && preset)
-}
 
 export default function PhotoField({ label, value, onSet }: Props) {
   const [busy, setBusy] = useState(false)
@@ -21,7 +15,7 @@ export default function PhotoField({ label, value, onSet }: Props) {
     setBusy(true)
     setUploadErr('')
     try {
-      if (hasCloudUpload()) {
+      if (getCloudConfig()) {
         onSet(await uploadImage(file))
       } else {
         onSet(await fileToDataUrl(file))
