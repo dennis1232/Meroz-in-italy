@@ -383,10 +383,6 @@ ul.stops li:first-child{border-top:0}
 .adm-save{background:linear-gradient(135deg,#3b82f6,#2563eb);border-color:transparent}
 .adm-save:hover{filter:brightness(1.08)}
 .adm-save:disabled{opacity:.6;cursor:wait}
-.adm-zip{background:linear-gradient(135deg,#10b981,#059669);border-color:transparent;
-  box-shadow:0 4px 12px rgba(5,150,105,.38)}
-.adm-zip:hover{filter:brightness(1.06)}
-.adm-zip:disabled{opacity:.6;cursor:wait}
 .adm-export:hover{background:rgba(255,255,255,.18)}
 .adm-linked{background:var(--ok) !important;border-color:transparent !important}
 .adm-saved{font-size:12px;color:#6ee7b7;font-weight:600;min-width:48px}
@@ -486,9 +482,12 @@ ul.stops li:first-child{border-top:0}
 .adm-loc{background:var(--soft);border:1px solid var(--line);border-radius:11px;
   padding:12px;display:flex;flex-direction:column;gap:8px}
 .adm-loc input{background:#fff}
-.adm-loc-ok{font-size:13px;color:var(--ok);font-weight:700;display:flex;align-items:center;gap:10px}
-.adm-loc-ok button{background:#fff;border:1px solid var(--line);border-radius:7px;
-  padding:3px 10px;font-size:11px;cursor:pointer;color:var(--muted)}
+.adm-loc-map{height:160px;border-radius:10px;overflow:hidden;border:1px solid var(--line);
+  margin-top:8px;position:relative;isolation:isolate}
+.adm-loc-clear{position:absolute;top:8px;right:8px;z-index:1000;background:#fff;
+  border:1px solid var(--line);border-radius:7px;padding:3px 10px;font-size:12px;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.adm-loc-clear:hover{background:var(--soft)}
 .adm-loc-no{font-size:12px;color:var(--faint)}
 
 /* photo field */

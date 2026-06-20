@@ -1,8 +1,8 @@
 import type { Stop, StopTag } from './data'
 
 // ── Raw (editor) types — lat/lng kept as strings while typing ─────────────────
-export type StopRaw = Omit<Stop, 'lat' | 'lng'> & { lat?: string; lng?: string }
-export type SpotRaw = { name: string; he: string; desc: string; img: string; lat: string; lng: string }
+export type StopRaw = Omit<Stop, 'lat' | 'lng'> & { lat?: string; lng?: string; mapLink?: string }
+export type SpotRaw = { name: string; he: string; desc: string; img: string; lat: string; lng: string; mapLink?: string }
 
 export type DayRaw = {
   n: number
@@ -81,7 +81,8 @@ export function parseLatLng(text: string): { lat: string; lng: string } | null {
 export function toRaw(data: any): TripRaw {
   const spot = (s: any): SpotRaw => ({
     name: s.name || '', he: s.he || '', desc: s.desc || '', img: s.img || '',
-    lat: s.lat != null ? String(s.lat) : '', lng: s.lng != null ? String(s.lng) : ''
+    lat: s.lat != null ? String(s.lat) : '', lng: s.lng != null ? String(s.lng) : '',
+    mapLink: s.mapLink || undefined
   })
   return {
     meta: { lang: 'he', ...data.meta },
@@ -91,7 +92,8 @@ export function toRaw(data: any): TripRaw {
       stops: (day.stops || []).map((s: any) => ({
         ...s,
         lat: s.lat != null ? String(s.lat) : '',
-        lng: s.lng != null ? String(s.lng) : ''
+        lng: s.lng != null ? String(s.lng) : '',
+        mapLink: s.mapLink || undefined
       }))
     })),
     attractions: (data.attractions || []).map(spot),

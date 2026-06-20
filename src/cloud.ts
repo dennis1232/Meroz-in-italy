@@ -1,47 +1,21 @@
-// Cloudinary: prefer .env (VITE_*), fallback to localStorage from AdminHome settings
-export type CloudConfig = {
-  cloudinaryCloud: string   // e.g. "my-cloud"
-  cloudinaryPreset: string  // unsigned upload preset name
+// Cloudinary — configured via VITE_CLOUDINARY_* env vars (Netlify / .env)
+export function isCloudinaryConfigured(): boolean {
+  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
+  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
+  return !!(cloud && preset)
 }
 
-const KEY = 'meroz-cloud-config'
-
-function envConfig(): CloudConfig | null {
-  const cloudinaryCloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
-  const cloudinaryPreset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
-  if (cloudinaryCloud && cloudinaryPreset) {
-    return { cloudinaryCloud, cloudinaryPreset }
-  }
-  return null
-}
-
-function localConfig(): CloudConfig | null {
-  try { return JSON.parse(localStorage.getItem(KEY) ?? 'null') } catch { return null }
-}
-
-export function isCloudinaryFromEnv(): boolean {
-  return envConfig() !== null
-}
-
-export function getConfig(): CloudConfig | null {
-  return envConfig() ?? localConfig()
-}
-
-export function saveConfig(cfg: CloudConfig) {
-  localStorage.setItem(KEY, JSON.stringify(cfg))
-}
-
-// Upload image file to Cloudinary, return secure URL
 export async function uploadImage(file: File): Promise<string> {
-  const cfg = getConfig()
-  if (!cfg?.cloudinaryCloud || !cfg?.cloudinaryPreset) {
-    throw new Error('Cloudinary not configured — set VITE_CLOUDINARY_* in .env or open Settings in admin home')
+  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
+  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
+  if (!cloud || !preset) {
+    throw new Error('Cloudinary not configured — set VITE_CLOUDINARY_CLOUD and VITE_CLOUDINARY_PRESET in Netlify env vars')
   }
   const fd = new FormData()
   fd.append('file', file)
-  fd.append('upload_preset', cfg.cloudinaryPreset)
+  fd.append('upload_preset', preset)
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${cfg.cloudinaryCloud}/image/upload`,
+    `https://api.cloudinary.com/v1_1/${cloud}/image/upload`,
     { method: 'POST', body: fd }
   )
   const json = await res.json().catch(() => ({}))

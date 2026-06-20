@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import JSZip from 'jszip'
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import { rawTrip, A } from './data'
 import {
   TAGS, TAG_LABEL, isoToFields, parseLatLng, toRaw, toClean,
   type StopRaw, type SpotRaw, type DayRaw, type TripRaw
 } from './tripUtils'
-import { uploadImage, saveTrip, getConfig } from './cloud'
+import { uploadImage, saveTrip, isCloudinaryConfigured } from './cloud'
+import { copyTripLink } from './ui'
 
 declare global {
   interface Window {
@@ -59,32 +60,78 @@ async function expandShortUrl(url: string): Promise<string> {
   return (json.status?.url as string | undefined) ?? url
 }
 
+function linkForCoords(lat: string, lng: string, source: string): string {
+  if (/waze\.com/i.test(source)) {
+    return `https://www.waze.com/ul?ll=${lat},${lng}&navigate=yes`
+  }
+  return `https://www.google.com/maps?q=${lat},${lng}`
+}
+
+function LocMap({ lat, lng }: { lat: number; lng: number }) {
+  const pos: [number, number] = [lat, lng]
+  function Center() {
+    const map = useMap()
+    useEffect(() => {
+      map.setView([lat, lng], 15)
+      const t = setTimeout(() => map.invalidateSize(), 60)
+      return () => clearTimeout(t)
+    }, [lat, lng, map])
+    return null
+  }
+  return (
+    <MapContainer center={pos} zoom={15} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
+      <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+      <Center />
+      <Marker position={pos} />
+    </MapContainer>
+  )
+}
+
 // ── Reusable: location paste field ────────────────────────────────────────────
 function LocationField({
-  lat, lng, onSet
+  lat, lng, mapLink, onSet
 }: {
   lat?: string
   lng?: string
-  onSet: (lat: string, lng: string) => void
+  mapLink?: string
+  onSet: (lat: string, lng: string, mapLink?: string) => void
 }) {
   const [paste, setPaste] = useState('')
   const [err, setErr] = useState(false)
   const [expanding, setExpanding] = useState(false)
 
+  const displayUrl = mapLink || (lat && lng ? linkForCoords(lat, lng, mapLink ?? '') : '')
+  const inputValue = paste || displayUrl
+
   const apply = async (v: string) => {
     setPaste(v)
     setErr(false)
-    if (!v) return
-    let target = v
-    if (/maps\.app\.goo\.gl/.test(v)) {
+    if (!v.trim()) {
+      onSet('', '', '')
+      return
+    }
+    let target = v.trim()
+    if (/maps\.app\.goo\.gl/.test(target)) {
       setExpanding(true)
-      try { target = await expandShortUrl(v) }
+      try { target = await expandShortUrl(target) }
       catch { setErr(true); setExpanding(false); return }
       setExpanding(false)
     }
     const r = parseLatLng(target)
-    if (r) { onSet(r.lat, r.lng); setErr(false); setPaste('') }
-    else setErr(true)
+    if (r) {
+      const storedLink = /^(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)$/.test(v.trim())
+        ? linkForCoords(r.lat, r.lng, v)
+        : (/maps\.app\.goo\.gl/.test(v.trim()) ? target : v.trim())
+      onSet(r.lat, r.lng, storedLink)
+      setErr(false)
+      setPaste('')
+    } else setErr(true)
+  }
+
+  const clear = () => {
+    setPaste('')
+    setErr(false)
+    onSet('', '', '')
   }
 
   return (
@@ -92,16 +139,16 @@ function LocationField({
       <label>
         📍 Paste Google Maps / Waze link
         <input
-          value={paste}
+          value={inputValue}
           placeholder="https://maps.app.goo.gl/...  or  43.77, 11.26"
           onChange={(e) => apply(e.target.value)}
         />
       </label>
       {expanding && <div className="adm-loc-no">⏳ extracting coordinates…</div>}
-      {!expanding && lat && lng ? (
-        <div className="adm-loc-ok">
-          ✓ {Number(lat).toFixed(4)}, {Number(lng).toFixed(4)}
-          <button onClick={() => onSet('', '')}>clear</button>
+      {!expanding && lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng)) ? (
+        <div className="adm-loc-map">
+          <button type="button" className="adm-loc-clear" onClick={clear}>clear</button>
+          <LocMap lat={parseFloat(lat)} lng={parseFloat(lng)} />
         </div>
       ) : (
         !expanding && <div className="adm-loc-no">{err ? '⚠️ no coordinates found in that link' : 'no location set'}</div>
@@ -120,7 +167,7 @@ function PhotoField({ label, value, onSet }: { label: string; value: string; onS
     setBusy(true)
     setUploadErr('')
     try {
-      if (getConfig()?.cloudinaryCloud) {
+      if (isCloudinaryConfigured()) {
         onSet(await uploadImage(file))
       } else {
         onSet(await fileToDataUrl(file))
@@ -205,7 +252,17 @@ function StopRow({
             </label>
           </div>
           <div className="adm-stop-right">
-            <LocationField lat={stop.lat} lng={stop.lng} onSet={(la, ln) => onChange({ ...stop, lat: la || undefined, lng: ln || undefined })} />
+            <LocationField
+              lat={stop.lat}
+              lng={stop.lng}
+              mapLink={stop.mapLink}
+              onSet={(la, ln, link) => onChange({
+                ...stop,
+                lat: la || undefined,
+                lng: ln || undefined,
+                mapLink: link || undefined
+              })}
+            />
             <div className="adm-checks">
               <label>
                 <input type="checkbox" checked={!!stop.move} onChange={(e) => set('move', e.target.checked || undefined)} />
@@ -334,7 +391,12 @@ function SpotRow({ spot, onChange, onDelete, onMove }: {
           </div>
           <label>Description<textarea rows={2} value={spot.desc} onChange={(e) => set('desc', e.target.value)} /></label>
           <PhotoField label="Photo" value={spot.img} onSet={(v) => set('img', v)} />
-          <LocationField lat={spot.lat} lng={spot.lng} onSet={(la, ln) => onChange({ ...spot, lat: la, lng: ln })} />
+          <LocationField
+            lat={spot.lat}
+            lng={spot.lng}
+            mapLink={spot.mapLink}
+            onSet={(la, ln, link) => onChange({ ...spot, lat: la, lng: ln, mapLink: link || undefined })}
+          />
         </div>
       )}
     </div>
@@ -383,6 +445,7 @@ export default function Admin({ tripId }: { tripId: string }) {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveErr, setSaveErr] = useState('')
+  const [shareMsg, setShareMsg] = useState('')
   const [menu, setMenu] = useState(false)
   const [, force] = useState(0)
   const fileHandle = useRef<FileSystemFileHandle | null>(null)
@@ -441,45 +504,6 @@ export default function Admin({ tripId }: { tripId: string }) {
     }
   }
 
-  const [zipping, setZipping] = useState(false)
-  const buildSiteZip = useCallback(async () => {
-    const base = import.meta.env.BASE_URL
-    let files: string[]
-    try {
-      const res = await fetch(base + 'site-files.json', { cache: 'no-cache' })
-      if (!res.ok) throw new Error()
-      files = await res.json()
-    } catch {
-      alert(
-        '⚠️ Site files not found.\n\n' +
-        'The "Download site" packager only works on a BUILT site.\n' +
-        'Run:  npm run build  →  npm run preview\n' +
-        'then open this editor from the preview/deployed URL.'
-      )
-      return
-    }
-    setZipping(true)
-    try {
-      const zip = new JSZip()
-      for (const f of files) {
-        if (f === 'trip.json') continue // inject edited version below
-        const r = await fetch(base + f)
-        zip.file(f, await r.blob())
-      }
-      zip.file(`trips/${tripId}.json`, JSON.stringify(toClean(trip), null, 2))
-      zip.file('_redirects', '/trip/*    /index.html   200\n/admin/*   /index.html   200\n')
-      const out = await zip.generateAsync({ type: 'blob' })
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(out)
-      const slug = (trip.meta.title || 'trip').replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-|-$/g, '')
-      a.download = `${slug || 'trip'}-site.zip`
-      a.click()
-      URL.revokeObjectURL(a.href)
-    } finally {
-      setZipping(false)
-    }
-  }, [trip])
-
   const resetDraft = () => {
     if (!confirm('Discard your draft and reload the published trip.json?')) return
     localStorage.removeItem(`draft-${tripId}`)
@@ -515,6 +539,13 @@ export default function Admin({ tripId }: { tripId: string }) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const shareLink = () => {
+    copyTripLink(tripId).then(() => {
+      setShareMsg('✓ copied')
+      setTimeout(() => setShareMsg(''), 2000)
+    })
+  }
+
   return (
     <div className="adm-root" dir="ltr">
       <div className="adm-topbar">
@@ -534,8 +565,8 @@ export default function Admin({ tripId }: { tripId: string }) {
           }}>
             👁 Preview
           </button>
-          <button className="adm-btn adm-zip" onClick={buildSiteZip} disabled={zipping}>
-            {zipping ? '📦 Packaging…' : '📦 Download site'}
+          <button className="adm-btn adm-preview" onClick={shareLink}>
+            {shareMsg || '🔗 Copy link'}
           </button>
           <div className="adm-menu-wrap">
             <button className="adm-btn adm-more" onClick={() => setMenu((m) => !m)} aria-label="More">⋯</button>
@@ -628,13 +659,7 @@ export default function Admin({ tripId }: { tripId: string }) {
           </div>
 
           <div className="adm-hint">
-            <b>📦 Make a customer site:</b> Build the trip above → click <b>Download site</b> →
-            you get a <code>.zip</code> → drag it onto <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">app.netlify.com/drop</a> → live in seconds.
-            Photos are embedded, so the zip is fully self-contained.
-            <br />
-            <span className="adm-hint-dim">
-              ({zipping ? 'packaging…' : 'Download site needs a built site — use it from the deployed/preview URL, not the dev server.'})
-            </span>
+            <b>☁️ Publish:</b> Click <b>Save</b> to push to GitHub, then <b>Copy link</b> to share with travelers.
           </div>
 
           <div id="adm-json"><JsonPreview trip={trip} /></div>

@@ -23,6 +23,10 @@ export const isStandalone =
   typeof window !== 'undefined' &&
   (window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true)
 
+export function copyTripLink(tripId: string): Promise<void> {
+  return navigator.clipboard.writeText(`${location.origin}/trip/${tripId}`)
+}
+
 // Per-stop navigation decision for the itinerary list:
 // - car drive → Waze (to its own pin, or the next pinned stop)
 // - train/flight legs → no Waze, just an icon
