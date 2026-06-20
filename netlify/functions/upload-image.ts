@@ -42,9 +42,12 @@ export const handler: Handler = async (event) => {
     const json = await res.json().catch(() => ({}))
     if (!res.ok) {
       const msg = (json as { error?: { message?: string } }).error?.message
+      const hint = msg === 'Upload preset not found'
+        ? ` — check preset name "${preset}" in Cloudinary (Settings → Upload → Upload presets, must be Unsigned)`
+        : ''
       return {
         statusCode: res.status,
-        body: msg ? `Cloudinary: ${msg}` : `Cloudinary upload failed: ${res.status}`,
+        body: msg ? `Cloudinary: ${msg}${hint}` : `Cloudinary upload failed: ${res.status}`,
       }
     }
     return {

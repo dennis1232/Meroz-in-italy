@@ -19,8 +19,8 @@ export default function PhotoField({ label, value, onSet }: Props) {
         onSet(await uploadImage(file))
       } catch (err) {
         const msg = String(err)
-        // Server env not set — fall back to embedded image
-        if (msg.includes('CLOUDINARY') || msg.includes('503')) {
+        // Only fall back when Cloudinary isn't configured on the server
+        if (msg.includes('Missing Cloudinary env') || msg.includes(': 503')) {
           onSet(await fileToDataUrl(file))
         } else {
           throw err
