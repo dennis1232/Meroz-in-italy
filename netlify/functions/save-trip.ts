@@ -1,14 +1,24 @@
 import type { Handler } from '@netlify/functions'
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN!
-const GITHUB_OWNER = process.env.GITHUB_OWNER!
-const GITHUB_REPO  = process.env.GITHUB_REPO!
 const API = 'https://api.github.com'
 
-async function ghGet(path: string) {
+type GhConfig = { token: string; owner: string; repo: string }
+
+// Bracket access so esbuild doesn't inline undefined at bundle time
+function githubConfig(): GhConfig {
+  const token = process.env['GITHUB_TOKEN']
+  const owner = process.env['GITHUB_OWNER']
+  const repo = process.env['GITHUB_REPO']
+  if (!token || !owner || !repo) {
+    throw new Error('Missing GITHUB_TOKEN, GITHUB_OWNER, or GITHUB_REPO in environment')
+  }
+  return { token, owner, repo }
+}
+
+async function ghGet(cfg: GhConfig, path: string) {
   const res = await fetch(`${API}${path}`, {
     headers: {
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Authorization: `Bearer ${cfg.token}`,
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
     },
@@ -18,7 +28,7 @@ async function ghGet(path: string) {
   return res.json()
 }
 
-async function ghPut(path: string, content: string, message: string, sha?: string) {
+async function ghPut(cfg: GhConfig, path: string, content: string, message: string, sha?: string) {
   const body: Record<string, string> = {
     message,
     content: Buffer.from(content).toString('base64'),
@@ -27,7 +37,7 @@ async function ghPut(path: string, content: string, message: string, sha?: strin
   const res = await fetch(`${API}${path}`, {
     method: 'PUT',
     headers: {
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Authorization: `Bearer ${cfg.token}`,
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json',
@@ -46,6 +56,13 @@ export const handler: Handler = async (event) => {
     return { statusCode: 405, body: 'Method not allowed' }
   }
 
+  let cfg: GhConfig
+  try {
+    cfg = githubConfig()
+  } catch (e) {
+    return { statusCode: 500, body: String(e) }
+  }
+
   let tripId: string, tripData: Record<string, unknown>
   try {
     ;({ tripId, tripData } = JSON.parse(event.body ?? '{}'))
@@ -54,13 +71,14 @@ export const handler: Handler = async (event) => {
     return { statusCode: 400, body: String(e) }
   }
 
-  const repoBase = `/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`
+  const repoBase = `/repos/${cfg.owner}/${cfg.repo}/contents`
 
   try {
     // 1 — write trip JSON
     const tripPath = `${repoBase}/public/trips/${tripId}.json`
-    const existing = await ghGet(tripPath)
+    const existing = await ghGet(cfg, tripPath)
     await ghPut(
+      cfg,
       tripPath,
       JSON.stringify(tripData, null, 2),
       `trip: update ${tripId}`,
@@ -69,7 +87,7 @@ export const handler: Handler = async (event) => {
 
     // 2 — update index.json
     const indexPath = `${repoBase}/public/trips/index.json`
-    const indexFile = await ghGet(indexPath)
+    const indexFile = await ghGet(cfg, indexPath)
     const index: Array<{ id: string; title: string; startISO: string; endISO: string }> =
       indexFile ? JSON.parse(Buffer.from(indexFile.content, 'base64').toString()) : []
 
@@ -92,6 +110,7 @@ export const handler: Handler = async (event) => {
     }
 
     await ghPut(
+      cfg,
       indexPath,
       JSON.stringify(index, null, 2),
       `trip: sync index for ${tripId}`,
