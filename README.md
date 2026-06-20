@@ -48,7 +48,7 @@ Trip advisor (admin)          Travelers (PWA)
 - **Multiple trips** — each trip has its own ID, JSON file, and public link
 - **Drafts** — the admin auto-saves your work to the browser (`localStorage`) every few seconds
 - **Publish** — clicking **Save** pushes the trip JSON to GitHub via a Netlify serverless function; Netlify redeploys and travelers get the update
-- **Images** — uploaded through Cloudinary (recommended) or stored as inline data URLs if Cloudinary is not configured
+- **Images** — uploaded in the admin and stored in the trip JSON (embedded or hosted URLs)
 
 ---
 
@@ -72,12 +72,6 @@ These environment variables must be configured in **Netlify** (and in a local `.
 | `GITHUB_TOKEN` | GitHub personal access token with **Contents: Read and write** on the repo |
 | `GITHUB_OWNER` | GitHub username or org |
 | `GITHUB_REPO` | Repository name (case-sensitive) |
-| `VITE_CLOUDINARY_CLOUD` | Cloudinary cloud name |
-| `VITE_CLOUDINARY_PRESET` | Cloudinary **unsigned** upload preset name |
-
-**Cloudinary preset requirements:**
-- Signing mode must be **Unsigned**
-- Preset name must match exactly (case-sensitive)
 
 Copy `.env.example` to `.env` and fill in values for local development.
 
@@ -235,15 +229,7 @@ When the trip is ready for travelers:
 
 ### Photos
 
-Click **📷 Upload** on any photo field. With Cloudinary configured:
-- Images upload to the cloud and are stored as URLs in the trip JSON
-- Fast loading, small file size, works offline after first view
-
-Without Cloudinary:
-- Images are embedded as large data URLs
-- Works but makes the JSON very heavy — configure Cloudinary for production trips
-
-Supported: any common image format (JPEG, PNG, WebP, etc.)
+Click **📷 Upload** on any photo field. Images are saved into the trip JSON and appear in the traveler app after you **Save**.
 
 ### Locations
 
@@ -300,7 +286,6 @@ The **Info → Driving tips** section (Telepass, ZTL zones, Waze, speed cameras,
 | **Save failed: 404** | Running plain `npm run dev` | Use `npm run dev:netlify` locally, or save on the deployed Netlify site |
 | **Missing GITHUB_TOKEN…** | Env vars not set | Add GitHub credentials to `.env` (local) or Netlify dashboard (production) |
 | **GitHub GET …/undefined/undefined…** | `GITHUB_OWNER` or `GITHUB_REPO` missing | Check `.env` values match your repo exactly |
-| **Cloudinary upload failed** | Wrong preset or not unsigned | Verify cloud name and preset in Netlify env vars; preset must be **Unsigned** |
 | **Duplicate / rename / delete fails** | Same as Save — needs Netlify functions + GitHub | Use deployed site or `npm run dev:netlify` |
 | **Trip already exists** | Duplicate target ID is taken | Pick a different trip ID |
 | **Travelers see old content** | Netlify hasn't redeployed yet | Wait 1–2 min after Save, or hard-refresh |
@@ -332,11 +317,12 @@ netlify/functions/
 
 | Path | Component |
 |------|-----------|
-| `/` | Redirects to first trip in index |
-| `/trip/{id}` | Traveler app |
+| `/` | 404 — no default trip |
+| `/trip/{id}` | Traveler app (404 if trip JSON missing) |
 | `/trip/{id}?preview` | Preview from localStorage draft |
 | `/admin` | Trip list |
 | `/admin/{id}` | Trip editor |
+| anything else | 404 |
 
 ---
 

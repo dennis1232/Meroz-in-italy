@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import Admin from './admin/Admin'
 import AdminHome from './admin/AdminHome'
+import NotFound from './components/NotFound'
 import { loadTrip, initTrip } from './data'
 
 // bundled fonts (work offline)
@@ -20,6 +21,10 @@ import './styles.css'
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 const segments = location.pathname.replace(/\/$/, '').split('/').filter(Boolean)
 
+function showNotFound() {
+  root.render(<React.StrictMode><NotFound /></React.StrictMode>)
+}
+
 if (segments[0] === 'admin' && segments.length === 1) {
   root.render(<React.StrictMode><AdminHome /></React.StrictMode>)
 
@@ -34,33 +39,21 @@ if (segments[0] === 'admin' && segments.length === 1) {
 } else if (segments[0] === 'trip' && segments.length >= 2) {
   const tripId = segments[1]
   const isPreview = new URLSearchParams(location.search).has('preview')
-  const previewData = isPreview ? localStorage.getItem(`preview-${tripId}`) : null
-  const boot = previewData
-    ? Promise.resolve(initTrip(JSON.parse(previewData)))
-    : loadTrip(tripId).catch(err => console.error(`Failed to load trips/${tripId}.json`, err))
-  boot.finally(() => root.render(<React.StrictMode><App /></React.StrictMode>))
+  const previewRaw = isPreview ? localStorage.getItem(`preview-${tripId}`) : null
 
-} else if (segments.length === 0) {
-  fetch(`${import.meta.env.BASE_URL}trips/index.json`)
-    .then(r => r.json())
-    .then((trips: { id: string }[]) => {
-      if (trips[0]?.id) location.replace(`/trip/${trips[0].id}`)
-    })
-    .catch(() => {})
-  root.render(
-    <React.StrictMode>
-      <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>Loading trip…</div>
-    </React.StrictMode>
-  )
+  if (isPreview && previewRaw) {
+    try {
+      initTrip(JSON.parse(previewRaw))
+      root.render(<React.StrictMode><App /></React.StrictMode>)
+    } catch {
+      showNotFound()
+    }
+  } else {
+    loadTrip(tripId)
+      .then(() => root.render(<React.StrictMode><App /></React.StrictMode>))
+      .catch(() => showNotFound())
+  }
 
 } else {
-  root.render(
-    <React.StrictMode>
-      <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
-        Page not found. Try{' '}
-        <a href="/trip/meroz-italy-2026">/trip/meroz-italy-2026</a> or{' '}
-        <a href="/admin">/admin</a>.
-      </div>
-    </React.StrictMode>
-  )
+  showNotFound()
 }

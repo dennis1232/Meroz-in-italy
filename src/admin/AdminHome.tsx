@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent, type MouseEvent } from 'react'
-import { isCloudinaryConfigured, manageTrip } from '../cloud'
+import { manageTrip } from '../cloud'
 import { copyTripLink } from '../ui'
 import AdminModal, { ModalActions, ModalField } from './AdminModal'
 
@@ -177,13 +177,6 @@ export default function AdminHome() {
       </div>
 
       <div className="adm-home-body">
-        {!isCloudinaryConfigured() && (
-          <div className="adm-banner adm-banner-warn">
-            Cloudinary is not configured — image uploads fall back to large data URLs.
-            Set <code>VITE_CLOUDINARY_CLOUD</code> and <code>VITE_CLOUDINARY_PRESET</code> in Netlify, then redeploy.
-          </div>
-        )}
-
         {error && <div className="adm-banner adm-banner-err">{error}</div>}
 
         {!error && trips.length > 0 && (

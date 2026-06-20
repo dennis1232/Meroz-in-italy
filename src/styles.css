@@ -29,7 +29,18 @@ body{
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 
-/* phone frame */
+/* 404 */
+.not-found{
+  min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 24px;text-align:center;background:var(--cream);color:var(--ink)
+}
+.not-found-code{
+  margin:0 0 8px;font-family:var(--serif);font-size:72px;font-weight:900;line-height:1;
+  color:var(--brick);opacity:.35
+}
+.not-found h1{margin:0 0 10px;font-family:var(--serif);font-size:28px;font-weight:700}
+.not-found-lead{margin:0;max-width:320px;color:var(--muted);font-size:15px;line-height:1.5}
+
 .app{max-width:480px;margin:0 auto;min-height:100%;background:var(--cream);position:relative;
   padding-bottom:calc(74px + var(--safe-bot));}
 .screen{display:none;animation:fade .28s ease}

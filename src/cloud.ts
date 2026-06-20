@@ -1,15 +1,9 @@
-// Cloudinary — configured via VITE_CLOUDINARY_* env vars (Netlify / .env)
-export function isCloudinaryConfigured(): boolean {
-  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
-  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
-  return !!(cloud && preset)
-}
-
+// Cloudinary upload (optional — set VITE_CLOUDINARY_* in env)
 export async function uploadImage(file: File): Promise<string> {
   const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
   const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
   if (!cloud || !preset) {
-    throw new Error('Cloudinary not configured — set VITE_CLOUDINARY_CLOUD and VITE_CLOUDINARY_PRESET in Netlify env vars')
+    throw new Error('Image upload is not available')
   }
   const fd = new FormData()
   fd.append('file', file)
