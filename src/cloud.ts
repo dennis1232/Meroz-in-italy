@@ -36,9 +36,9 @@ export async function saveTrip(tripId: string, tripData: unknown): Promise<void>
 type ManageTripBody =
   | { action: 'rename'; tripId: string; title: string }
   | { action: 'delete'; tripId: string }
-  | { action: 'duplicate'; tripId: string; newTripId: string; title?: string }
+  | { action: 'duplicate'; tripId: string; newTripId: string; title?: string; tripData?: unknown }
 
-export async function manageTrip(body: ManageTripBody): Promise<{ newTripId?: string; title?: string }> {
+export async function manageTrip(body: ManageTripBody): Promise<{ newTripId?: string; title?: string; tripData?: unknown }> {
   const res = await fetch('/.netlify/functions/trip-manage', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

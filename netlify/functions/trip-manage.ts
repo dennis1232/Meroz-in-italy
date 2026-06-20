@@ -125,8 +125,9 @@ export const handler: Handler = async (event) => {
   }
 
   let action: string, tripId: string, title: string | undefined, newTripId: string | undefined
+  let tripData: Record<string, unknown> | undefined
   try {
-    ;({ action, tripId, title, newTripId } = JSON.parse(event.body ?? '{}'))
+    ;({ action, tripId, title, newTripId, tripData } = JSON.parse(event.body ?? '{}'))
     if (!action || !tripId) throw new Error('missing action or tripId')
   } catch (e) {
     return { statusCode: 400, body: String(e) }
@@ -164,7 +165,13 @@ export const handler: Handler = async (event) => {
       const existing = await ghGet(cfg, tripPath(cfg, targetId))
       if (existing) throw new Error(`Trip already exists: ${targetId}`)
 
-      const { data } = await loadTripJson(cfg, tripId)
+      let data: Record<string, unknown>
+      if (tripData && typeof tripData === 'object') {
+        data = JSON.parse(JSON.stringify(tripData))
+      } else {
+        data = JSON.parse(JSON.stringify((await loadTripJson(cfg, tripId)).data))
+      }
+
       const meta = (data.meta ?? {}) as Record<string, unknown>
       const baseTitle = (meta.title as string) || tripId
       meta.title = title?.trim() || `${baseTitle} (copy)`
@@ -174,7 +181,7 @@ export const handler: Handler = async (event) => {
       const { list, sha: indexSha } = await loadIndex(cfg)
       syncIndexEntry(list, targetId, data)
       await saveIndex(cfg, list, indexSha, `trip: duplicate index ${targetId}`)
-      return { statusCode: 200, body: JSON.stringify({ ok: true, newTripId: targetId }) }
+      return { statusCode: 200, body: JSON.stringify({ ok: true, newTripId: targetId, tripData: data }) }
     }
 
     return { statusCode: 400, body: `Unknown action: ${action}` }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent, type MouseEvent } from 'react'
 import { manageTrip } from '../cloud'
 import { copyTripLink } from '../ui'
+import { toClean, toRaw } from '../tripUtils'
 import AdminModal, { ModalActions, ModalField } from './AdminModal'
 
 type TripEntry = { id: string; title: string; startISO: string; endISO: string }
@@ -13,6 +14,26 @@ type ModalState =
   | { kind: 'delete'; trip: TripEntry }
 
 const ID_RE = /^[a-z0-9-]+$/
+
+async function loadSourceTripJson(tripId: string): Promise<unknown | undefined> {
+  const draft = localStorage.getItem(`draft-${tripId}`)
+  if (draft) {
+    try {
+      return toClean(JSON.parse(draft))
+    } catch { /* fall through */ }
+  }
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}trips/${tripId}.json`, { cache: 'no-cache' })
+    if (res.ok) return await res.json()
+  } catch { /* ignore */ }
+  return undefined
+}
+
+function seedTripDraft(tripId: string, tripData: unknown) {
+  const raw = toRaw(tripData)
+  localStorage.setItem(`draft-${tripId}`, JSON.stringify(raw))
+  localStorage.setItem(`preview-${tripId}`, JSON.stringify(toClean(raw)))
+}
 
 function formatDates(start: string, end: string) {
   if (start && end) return `${start} → ${end}`
@@ -142,7 +163,17 @@ export default function AdminHome() {
     setModalBusy(true)
     setFieldErr(null)
     try {
-      await manageTrip({ action: 'duplicate', tripId: modal.trip.id, newTripId, title })
+      const tripData = await loadSourceTripJson(modal.trip.id)
+      const result = await manageTrip({
+        action: 'duplicate',
+        tripId: modal.trip.id,
+        newTripId,
+        title,
+        tripData,
+      })
+      if (result.tripData) {
+        seedTripDraft(newTripId, result.tripData)
+      }
       location.href = `/admin/${newTripId}`
     } catch (err) {
       setFieldErr(String(err))
