@@ -5,12 +5,6 @@ import { fileToDataUrl } from '../utils'
 
 type Props = { label: string; value: string; onSet: (v: string) => void }
 
-function hasCloudUpload() {
-  const cloud = (import.meta.env.VITE_CLOUDINARY_CLOUD ?? '').trim()
-  const preset = (import.meta.env.VITE_CLOUDINARY_PRESET ?? '').trim()
-  return !!(cloud && preset)
-}
-
 export default function PhotoField({ label, value, onSet }: Props) {
   const [busy, setBusy] = useState(false)
   const [uploadErr, setUploadErr] = useState('')
@@ -21,10 +15,16 @@ export default function PhotoField({ label, value, onSet }: Props) {
     setBusy(true)
     setUploadErr('')
     try {
-      if (hasCloudUpload()) {
+      try {
         onSet(await uploadImage(file))
-      } else {
-        onSet(await fileToDataUrl(file))
+      } catch (err) {
+        const msg = String(err)
+        // Server env not set — fall back to embedded image
+        if (msg.includes('CLOUDINARY') || msg.includes('503')) {
+          onSet(await fileToDataUrl(file))
+        } else {
+          throw err
+        }
       }
     } catch (err) {
       setUploadErr(String(err))
