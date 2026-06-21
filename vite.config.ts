@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { buildTripManifestJson } from './src/pwaManifest'
 
 function tripManifestDev(): Plugin {
   return {
@@ -27,30 +28,8 @@ function tripManifestDev(): Plugin {
         } catch { /* defaults */ }
 
         const origin = `http://127.0.0.1:${server.config.server.port ?? 5173}`
-        const startUrl = `${origin}/trip/${tripId}`
-        const shortName = title.length > 14 ? `${title.slice(0, 12)}…` : title
-        const name = subtitle ? `${title} · ${subtitle}` : title
-
         res.setHeader('Content-Type', 'application/manifest+json')
-        res.end(JSON.stringify({
-          id: startUrl,
-          name,
-          short_name: shortName,
-          description: subtitle || title,
-          start_url: startUrl,
-          scope: `${origin}/`,
-          display: 'standalone',
-          orientation: 'portrait',
-          theme_color: '#9c3b2e',
-          background_color: '#f3ecdf',
-          lang,
-          dir: lang === 'en' ? 'ltr' : 'rtl',
-          icons: [
-            { src: `${origin}/icons/icon-192.png`, sizes: '192x192', type: 'image/png' },
-            { src: `${origin}/icons/icon-512.png`, sizes: '512x512', type: 'image/png' },
-            { src: `${origin}/icons/icon-512.png`, sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
-          ],
-        }))
+        res.end(JSON.stringify(buildTripManifestJson(tripId, origin, title, subtitle, lang)))
       })
     },
   }

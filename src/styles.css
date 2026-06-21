@@ -226,12 +226,18 @@ ul.stops li:first-child{border-top:0}
 .tabbar button.on .ic{transform:translateY(-1px)}
 
 /* ===== intro modal ===== */
-.modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(40,22,12,.55);
+.modal-backdrop{position:fixed;inset:0;z-index:2000;background:rgba(40,22,12,.55);
   backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center;
   padding:0;animation:fade .2s ease}
 .modal{background:var(--cream);width:100%;max-width:480px;border-radius:22px 22px 0 0;
-  padding:22px 20px calc(20px + var(--safe-bot));box-shadow:0 -10px 40px rgba(0,0,0,.3);
-  max-height:92dvh;overflow-y:auto;animation:slideup .3s cubic-bezier(.2,.8,.2,1);text-align:center}
+  box-shadow:0 -10px 40px rgba(0,0,0,.3);
+  max-height:min(92dvh,92vh);display:flex;flex-direction:column;overflow:hidden;
+  animation:slideup .3s cubic-bezier(.2,.8,.2,1);text-align:center}
+.modal-scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:22px 20px 8px}
+.modal-foot{flex:none;padding:10px 20px calc(14px + var(--safe-bot));
+  border-top:1px solid var(--line);background:var(--cream);
+  box-shadow:0 -4px 18px rgba(40,22,12,.08)}
 @keyframes slideup{from{transform:translateY(100%)}to{transform:none}}
 .modal-logo{height:64px;margin:0 auto 6px;object-fit:contain}
 .modal h2{font-family:var(--serif);font-weight:900;color:var(--brick);margin:0 0 2px;font-size:24px}
@@ -252,7 +258,7 @@ ul.stops li:first-child{border-top:0}
 .modal-card ol.steps b{display:inline;color:var(--brick)}
 .share-ic{display:inline-flex;align-items:center;justify-content:center;background:#0a84ff;color:#fff;
   border-radius:6px;width:20px;height:20px;font-size:13px;font-weight:700;vertical-align:middle}
-.modal-check{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 14px;
+.modal-check{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 10px;
   font-size:14px;color:#5a4636;cursor:pointer}
 .modal-check input{width:18px;height:18px;accent-color:var(--brick)}
 .modal-btn{width:100%;border:0;background:var(--brick);color:#fff;font:inherit;font-weight:700;

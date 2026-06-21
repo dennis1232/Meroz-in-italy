@@ -1,17 +1,19 @@
 import type { Handler } from '@netlify/functions'
 
+// Duplicated constants — keep in sync with src/pwaManifest.ts (functions can't import src/)
+const PWA_HOME_TITLE = 'Meroz Italy'
+const PWA_ICON = '/icons/icon-192.png'
+const PWA_ICON_LARGE = '/icons/icon-512.png'
 const ID_RE = /^[a-z0-9-]+$/
 
 function buildManifest(tripId: string, origin: string, title: string, subtitle: string, lang: string) {
   const startUrl = `${origin}/trip/${tripId}`
-  const shortName = title.length > 14 ? `${title.slice(0, 12)}…` : title
-  const name = subtitle ? `${title} · ${subtitle}` : title
 
   return {
     id: startUrl,
-    name,
-    short_name: shortName,
-    description: subtitle || title,
+    name: PWA_HOME_TITLE,
+    short_name: PWA_HOME_TITLE,
+    description: subtitle.trim() || title.trim() || tripId,
     start_url: startUrl,
     scope: `${origin}/`,
     display: 'standalone',
@@ -21,9 +23,9 @@ function buildManifest(tripId: string, origin: string, title: string, subtitle: 
     lang,
     dir: lang === 'en' ? 'ltr' : 'rtl',
     icons: [
-      { src: `${origin}/icons/icon-192.png`, sizes: '192x192', type: 'image/png' },
-      { src: `${origin}/icons/icon-512.png`, sizes: '512x512', type: 'image/png' },
-      { src: `${origin}/icons/icon-512.png`, sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+      { src: `${origin}${PWA_ICON}`, sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: `${origin}${PWA_ICON_LARGE}`, sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: `${origin}${PWA_ICON_LARGE}`, sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
   }
 }

@@ -2,15 +2,15 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="./assets/logo.png" />
+  <link rel="icon" type="image/png" href="/assets/logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
   <meta name="theme-color" content="#9c3b2e" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Trip" />
-  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <title>Trip Guide</title>
+  <meta name="apple-mobile-web-app-title" content="Meroz Italy" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <title>Meroz Italy</title>
   <script>
     (function () {
       var KEY = 'meroz-pwa-trip';
@@ -31,10 +31,21 @@
       if (!m) return;
       var id = decodeURIComponent(m[1]);
       try { localStorage.setItem(KEY, id); } catch (e) {}
+
       var link = document.createElement('link');
       link.rel = 'manifest';
       link.href = '/trip/' + encodeURIComponent(id) + '/manifest.webmanifest';
       document.head.appendChild(link);
+
+      fetch('/trips/' + encodeURIComponent(id) + '.json', { cache: 'no-cache' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !data.meta) return;
+          var title = (data.meta.title || id).trim();
+          var sub = (data.meta.subtitle || '').trim();
+          document.title = sub ? title + ' \u00b7 ' + sub : title;
+        })
+        .catch(function () {});
     })();
   </script>
 </head>
