@@ -1,6 +1,59 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+
+function tripManifestDev(): Plugin {
+  return {
+    name: 'trip-manifest-dev',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const match = req.url?.match(/^\/trip\/([^/]+)\/manifest\.webmanifest/)
+        if (!match) return next()
+
+        const tripId = decodeURIComponent(match[1])
+        let title = tripId
+        let subtitle = ''
+        let lang = 'he'
+
+        try {
+          const port = server.config.server.port ?? 5173
+          const tripRes = await fetch(`http://127.0.0.1:${port}/trips/${tripId}.json`)
+          if (tripRes.ok) {
+            const data = await tripRes.json()
+            title = data.meta?.title?.trim() || tripId
+            subtitle = data.meta?.subtitle?.trim() || ''
+            lang = data.meta?.lang === 'en' ? 'en' : 'he'
+          }
+        } catch { /* defaults */ }
+
+        const startUrl = `/trip/${tripId}`
+        const shortName = title.length > 14 ? `${title.slice(0, 12)}…` : title
+        const name = subtitle ? `${title} · ${subtitle}` : title
+
+        res.setHeader('Content-Type', 'application/manifest+json')
+        res.end(JSON.stringify({
+          id: startUrl,
+          name,
+          short_name: shortName,
+          description: subtitle || title,
+          start_url: startUrl,
+          scope: '/',
+          display: 'standalone',
+          orientation: 'portrait',
+          theme_color: '#9c3b2e',
+          background_color: '#f3ecdf',
+          lang,
+          dir: lang === 'en' ? 'ltr' : 'rtl',
+          icons: [
+            { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+            { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+            { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          ],
+        }))
+      })
+    },
+  }
+}
 
 export default defineConfig({
   base: '/',
@@ -16,14 +69,17 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    tripManifestDev(),
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['assets/**/*'],
       manifest: {
-        name: 'Meroz In Italia · טוסקנה & רומא',
-        short_name: 'Meroz Italy',
-        description: 'מסלול הטיול שלנו באיטליה · 22/06 – 04/07',
+        name: 'Trip Guide',
+        short_name: 'Trip',
+        description: 'Travel itinerary',
+        start_url: '/404',
+        scope: '/',
         lang: 'he',
         dir: 'rtl',
         theme_color: '#9c3b2e',

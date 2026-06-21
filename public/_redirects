@@ -1,3 +1,4 @@
+/trip/:id/manifest.webmanifest  /.netlify/functions/trip-manifest?tripId=:id  200
 /trips/index.json  /index.html  404
 /trip/*            /index.html  200
 /admin/*           /index.html  200

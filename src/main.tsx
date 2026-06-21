@@ -5,7 +5,7 @@ import Admin from './admin/Admin'
 import AdminHome from './admin/AdminHome'
 import NotFound from './components/NotFound'
 import { loadTrip, initTrip, meta } from './data'
-import { applyTripPwa } from './pwaManifest'
+import { applyTripPwa, setTripManifestLink } from './pwaManifest'
 
 // bundled fonts (work offline)
 import '@fontsource/playfair-display/400.css'
@@ -43,6 +43,7 @@ if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
 
 } else if (segments[0] === 'trip' && segments.length >= 2) {
   const tripId = segments[1]
+  setTripManifestLink(tripId)
   const isPreview = new URLSearchParams(location.search).has('preview')
   const previewRaw = isPreview ? localStorage.getItem(`preview-${tripId}`) : null
 
