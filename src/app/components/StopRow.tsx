@@ -1,6 +1,6 @@
-import type { Stop } from '../data'
-import { t } from '../i18n'
-import { gmaps, waze, TAG_EMOJI, navForStop } from '../ui'
+import type { Stop } from '../../types'
+import { t } from '../../i18n'
+import { gmaps, waze, TAG_EMOJI, navForStop } from '../../ui'
 
 export default function StopRow({ stops, i }: { stops: Stop[]; i: number }) {
   const s = stops[i]
@@ -15,7 +15,7 @@ export default function StopRow({ stops, i }: { stops: Stop[]; i: number }) {
           {s.desc && <span className="ml-dur">{s.desc}</span>}
         </div>
         {isDrive && wazeTarget && (
-          <a className="go waze ml-waze" href={waze(wazeTarget as any)}>Waze</a>
+          <a className="go waze ml-waze" href={waze(wazeTarget)}>Waze</a>
         )}
       </li>
     )
@@ -34,11 +34,11 @@ export default function StopRow({ stops, i }: { stops: Stop[]; i: number }) {
         {s.desc && <div className="ds">{s.desc}</div>}
       </div>
       <div className="acts">
-        {s.parking && s.lat != null && (
-          <a className="go waze park" href={waze(s as any)}>🅿️ להחנות פה</a>
+        {s.parking && (s.mapLink || s.lat != null) && (
+          <a className="go waze park" href={s.mapLink || waze(s as any)}>{t('parkBtn')}</a>
         )}
-        {!s.parking && s.lat != null && (
-          <a className="go" href={gmaps(s)} target="_blank" rel="noopener">{t('mapBtn')}</a>
+        {!s.parking && (s.mapLink || s.lat != null) && (
+          <a className="go" href={s.mapLink || gmaps(s)} target="_blank" rel="noopener">{t('mapBtn')}</a>
         )}
       </div>
     </li>

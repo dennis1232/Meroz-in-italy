@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { days, meta, currentTripId, initTrip } from "./data";
-import { applyTripPwa } from "./pwaManifest";
-import { isStandalone, type Tab } from "./ui";
+import { days, meta, currentTripId, initTrip } from "../store";
+import { ddmm } from "../types";
+import { applyTripPwa } from "../pwaManifest";
+import { isStandalone, type Tab } from "../ui";
 import TabBar from "./components/TabBar";
 import IntroModal from "./components/IntroModal";
 import Overview from "./components/Overview";
@@ -34,8 +35,7 @@ export default function App() {
   useEffect(() => {
     if (!isStandalone && !localStorage.getItem("meroz_intro_seen"))
       setShowIntro(true);
-    const td = new Date();
-    const tds = `${String(td.getDate()).padStart(2, "0")}/${String(td.getMonth() + 1).padStart(2, "0")}`;
+    const tds = ddmm(new Date().toISOString().slice(0, 10));
     const today = days.find((d) => d.date === tds);
     if (today) {
       setTargetDay(today.n);

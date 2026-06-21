@@ -1,0 +1,32 @@
+:root{
+  --cream:#f3ecdf;
+  --cream2:#efe6d6;
+  --card:#fffaf1;
+  --ink:#3a2b20;
+  --muted:#8a7765;
+  --brick:#9c3b2e;
+  --brick-d:#7d2f24;
+  --rust:#8a3c1e;
+  --green:#2f4a36;
+  --olive:#a89c6e;
+  --charcoal:#2b2b2b;
+  --line:#e4d7c2;
+  --gold:#c9772e;
+  --shadow:0 8px 26px rgba(80,50,25,.14);
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+  --serif:"Playfair Display",Georgia,serif;
+  --script:"Dancing Script",cursive;
+  --he:"Heebo","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body,#root{height:100%}
+body{
+  margin:0;background:var(--cream);color:var(--ink);
+  font-family:var(--he);line-height:1.65;
+  overscroll-behavior-y:none;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.serif{font-family:var(--serif)}
+.script{font-family:var(--script)}

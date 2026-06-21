@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { days, type Stop } from '../data'
-import Map from '../Map'
+import { days } from '../../store'
+import type { Stop } from '../../types'
+import Map from './Map'
 import Topbar from './Topbar'
-import { colorFor } from '../ui'
+import { colorFor } from '../../ui'
 
 export default function MapScreen() {
   const [day, setDay] = useState<number>(0) // 0 = all

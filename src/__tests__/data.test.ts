@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import realTrip from '../public/trip.json'
-import { A, ddmm, initTrip, days, attractions, places, meta, contact } from './data'
-import { toRaw, toClean } from './tripUtils'
+import realTrip from '../../public/trip.json'
+import { A, ddmm } from '../types'
+import { initTrip, days, attractions, places, meta, contact } from '../store'
+import { toRaw, toClean } from '../tripUtils'
 
 describe('A (image resolver)', () => {
   it('prefixes bare filenames with /assets/', () => {
@@ -37,11 +38,11 @@ describe('ddmm', () => {
 describe('initTrip (live bindings)', () => {
   beforeEach(() => {
     initTrip({
-      meta: { title: 'T', subtitle: 'S', country: 'C', startISO: '2026-06-22', endISO: '2026-07-04', who: 'w', cover: 'cover.webp' },
+      meta: { title: 'T', subtitle: 'S', startISO: '2026-06-22', endISO: '2026-07-04', who: 'w', cover: 'cover.webp' },
       contact: { instagram: 'ig', phoneIL: '1', phoneILraw: '1', phoneIT: '2', phoneITraw: '2' },
       days: [{ n: 1, date: '22/06', dow: 'יום שני', en: 'June 22', hero: 'day01.webp', title: 'X', intro: 'i', stops: [{ name: 's' }] }],
-      attractions: [{ name: 'A', he: 'א', desc: 'd', img: 'a.webp', lat: 1, lng: 2 }],
-      places: [{ name: 'P', he: 'פ', desc: 'd', img: 'data:image/webp;base64,ZZ', lat: 3, lng: 4 }]
+      attractions: [{ name: 'A', desc: 'd', img: 'a.webp', lat: 1, lng: 2 }],
+      places: [{ name: 'P', desc: 'd', img: 'data:image/webp;base64,ZZ', lat: 3, lng: 4 }]
     })
   })
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { TAGS, TAG_LABEL, type StopRaw } from '../tripUtils'
+import { TAG_EMOJI } from '../ui'
 import LocationField from './fields/LocationField'
 
 type Props = {
@@ -17,7 +18,7 @@ export default function StopRow({ stop, onChange, onDelete, onMove }: Props) {
     ? `${stop.via === 'flight' ? '✈️' : stop.via === 'train' ? '🚆' : '🚗'} ${stop.name}`
     : stop.parking
     ? `🅿️ ${stop.name}`
-    : `${stop.tag ? TAG_LABEL[stop.tag].split(' ')[0] : '•'} ${stop.name}`
+    : `${stop.tag ? TAG_EMOJI[stop.tag] : '•'} ${stop.name}`
 
   return (
     <div className="adm-stop">

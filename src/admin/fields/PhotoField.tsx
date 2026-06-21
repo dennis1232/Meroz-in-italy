@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { A } from '../../data'
+import { A } from '../../types'
 import { getCloudConfig, uploadImage } from '../../cloud'
 import { fileToDataUrl } from '../utils'
 

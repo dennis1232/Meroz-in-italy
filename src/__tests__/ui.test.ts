@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { navForStop, colorFor, dayColors, gmaps, waze } from './ui'
-import type { Stop } from './data'
+import { navForStop, colorFor, dayColors, gmaps, waze } from '../ui'
+import type { Stop } from '../types'
 
 const place = (over: Partial<Stop> = {}): Stop => ({ name: 'place', ...over })
 

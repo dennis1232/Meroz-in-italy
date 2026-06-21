@@ -27,10 +27,7 @@ export default function SpotRow({ spot, onChange, onDelete, onMove }: Props) {
       </div>
       {open && (
         <div className="adm-stop-body">
-          <div className="adm-row2">
-            <label>Name (en)<input value={spot.name} onChange={(e) => set('name', e.target.value)} /></label>
-            <label>Name (he)<input value={spot.he} onChange={(e) => set('he', e.target.value)} /></label>
-          </div>
+          <label>Name<input value={spot.name} onChange={(e) => set('name', e.target.value)} /></label>
           <label>Description<textarea rows={2} value={spot.desc} onChange={(e) => set('desc', e.target.value)} /></label>
           <PhotoField label="Photo" value={spot.img} onSet={(v) => set('img', v)} />
           <LocationField

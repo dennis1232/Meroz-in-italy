@@ -1,4 +1,4 @@
-import type { TripMeta } from './data'
+import type { TripMeta } from './types'
 
 export const PWA_TRIP_KEY = 'meroz-pwa-trip'
 export const PWA_HOME_TITLE = 'Meroz Italy'
@@ -48,8 +48,8 @@ export function applyTripPwa(tripId: string, tripMeta: Pick<TripMeta, 'title' | 
   if (!tripId) return
   setTripManifestLink(tripId)
 
-  const title = tripMeta.title?.trim() || tripId
-  const name = tripDisplayName(title, tripMeta.subtitle ?? '', tripId)
+  const title = tripMeta.title.trim() || tripId
+  const name = tripDisplayName(title, tripMeta.subtitle, tripId)
 
   document.title = name
   document.documentElement.lang = tripMeta.lang === 'en' ? 'en' : 'he'

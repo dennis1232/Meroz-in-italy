@@ -1,6 +1,6 @@
-import { contact } from '../data'
-import { t } from '../i18n'
-import { logo } from '../ui'
+import { contact } from '../../store'
+import { t } from '../../i18n'
+import { logo } from '../../ui'
 
 export default function Contact() {
   return (

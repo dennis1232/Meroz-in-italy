@@ -1,4 +1,4 @@
-import { meta } from './data'
+import { meta } from './store'
 
 type Lang = 'he' | 'en'
 
@@ -19,8 +19,9 @@ const S = {
   countdownPost: { he: 'ימים לטיסה!', en: 'days to go!' },
 
   // stop / map
-  mapBtn:    { he: 'מפה',         en: 'Map' },
-  openInMap: { he: 'פתח במפה ↗', en: 'Open in maps ↗' },
+  mapBtn:    { he: 'מפה',           en: 'Map' },
+  parkBtn:   { he: '🅿️ להחנות פה', en: '🅿️ Park here' },
+  openInMap: { he: 'פתח במפה ↗',   en: 'Open in maps ↗' },
 
   // day card
   openDay:  { he: 'פתח את היום', en: 'Open day' },

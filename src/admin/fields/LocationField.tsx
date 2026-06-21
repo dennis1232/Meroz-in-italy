@@ -15,7 +15,7 @@ export default function LocationField({ lat, lng, mapLink, onSet }: Props) {
   const [err, setErr] = useState(false)
   const [expanding, setExpanding] = useState(false)
 
-  const displayUrl = mapLink || (lat && lng ? linkForCoords(lat, lng, mapLink ?? '') : '')
+  const displayUrl = mapLink || (lat && lng ? linkForCoords(lat, lng, '') : '')
   const inputValue = paste || displayUrl
 
   const apply = async (v: string) => {

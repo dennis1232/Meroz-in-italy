@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+import App from './app/App'
 import Admin from './admin/Admin'
 import AdminHome from './admin/AdminHome'
-import NotFound from './components/NotFound'
-import { loadTrip, initTrip, meta, setCurrentTripId } from './data'
+import NotFound from './app/components/NotFound'
+import { loadTrip, initTrip, meta, setCurrentTripId } from './store'
 import { applyTripPwa, redirectStandaloneToSavedTrip, setTripManifestLink } from './pwaManifest'
 
 // bundled fonts (work offline)

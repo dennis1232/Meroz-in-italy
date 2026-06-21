@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   parseLatLng, isoToFields, toRaw, toClean, HEBREW_DOW, TAGS, TAG_LABEL,
   type TripRaw
-} from './tripUtils'
+} from '../tripUtils'
 
 describe('parseLatLng', () => {
   it('parses raw "lat, lng"', () => {
@@ -84,7 +84,7 @@ describe('TAGS / TAG_LABEL', () => {
 })
 
 const sampleTrip = (): TripRaw => ({
-  meta: { title: 'T', subtitle: 'S', country: 'Italy', startISO: '2026-06-22', endISO: '2026-07-04', who: 'us', cover: 'cover.webp', lang: 'he' as const },
+  meta: { title: 'T', subtitle: 'S', startISO: '2026-06-22', endISO: '2026-07-04', who: 'us', cover: 'cover.webp', lang: 'he' as const },
   contact: { instagram: 'x', phoneIL: '+972 1', phoneILraw: '+9721', phoneIT: '+39 2', phoneITraw: '+392' },
   days: [{
     n: 1, date: '22/06', dow: 'יום שני', en: 'June 22', iso: '2026-06-22', hero: 'day01.webp',
@@ -96,8 +96,8 @@ const sampleTrip = (): TripRaw => ({
       { name: 'No coords' }
     ]
   }],
-  attractions: [{ name: 'A', he: 'אא', desc: 'd', img: 'a.webp', lat: '43.0', lng: '11.0' }],
-  places: [{ name: 'P', he: 'פפ', desc: 'd', img: 'p.webp', lat: '', lng: '' }]
+  attractions: [{ name: 'A', desc: 'd', img: 'a.webp', lat: '43.0', lng: '11.0' }],
+  places: [{ name: 'P', desc: 'd', img: 'p.webp', lat: '', lng: '' }]
 })
 
 describe('toClean', () => {
@@ -165,7 +165,7 @@ describe('toRaw', () => {
 
   it('normalises spot fields with defaults', () => {
     const r = toRaw({ meta: {}, contact: {}, attractions: [{ name: 'A' }], places: [] })
-    expect(r.attractions[0]).toEqual({ name: 'A', he: '', desc: '', img: '', lat: '', lng: '' })
+    expect(r.attractions[0]).toEqual({ name: 'A', desc: '', img: '', lat: '', lng: '' })
   })
 })
 

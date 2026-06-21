@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { useEffect, useMemo } from 'react'
-import type { Stop } from './data'
+import type { Stop } from '../../types'
 
 const gmaps = (s: Stop) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name + ' Italy')}`

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { logo, isIOS } from '../ui'
-import { t } from '../i18n'
+import { logo, isIOS } from '../../ui'
+import { t } from '../../i18n'
 
 export default function IntroModal({
   onClose,

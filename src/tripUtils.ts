@@ -1,8 +1,8 @@
-import type { Stop, StopTag } from './data'
+import type { Stop, StopTag } from './types'
 
 // ── Raw (editor) types — lat/lng kept as strings while typing ─────────────────
 export type StopRaw = Omit<Stop, 'lat' | 'lng'> & { lat?: string; lng?: string; mapLink?: string }
-export type SpotRaw = { name: string; he: string; desc: string; img: string; lat: string; lng: string; mapLink?: string }
+export type SpotRaw = { name: string; desc: string; img: string; lat: string; lng: string; mapLink?: string }
 
 export type DayRaw = {
   n: number
@@ -20,7 +20,6 @@ export type TripRaw = {
   meta: {
     title: string
     subtitle: string
-    country: string
     startISO: string
     endISO: string
     who: string
@@ -46,6 +45,13 @@ export const TAG_LABEL: Record<string, string> = {
 }
 
 export const HEBREW_DOW = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'שבת']
+export const ENGLISH_DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+export function deriveDow(iso: string | undefined, fallback: string, lang: 'he' | 'en'): string {
+  if (!iso) return fallback
+  const d = new Date(iso + 'T12:00:00')
+  return lang === 'en' ? ENGLISH_DOW[d.getDay()] : HEBREW_DOW[d.getDay()]
+}
 
 // Pick one date → derive dd/mm, Hebrew day-of-week, English label.
 export function isoToFields(iso: string) {
@@ -80,7 +86,7 @@ export function parseLatLng(text: string): { lat: string; lng: string } | null {
 
 export function toRaw(data: any): TripRaw {
   const spot = (s: any): SpotRaw => ({
-    name: s.name || '', he: s.he || '', desc: s.desc || '', img: s.img || '',
+    name: s.name || '', desc: s.desc || '', img: s.img || '',
     lat: s.lat != null ? String(s.lat) : '', lng: s.lng != null ? String(s.lng) : '',
     mapLink: s.mapLink || undefined
   })
@@ -107,7 +113,7 @@ export function toClean(raw: TripRaw) {
     return isNaN(n) ? undefined : n
   }
   const cleanSpot = (s: SpotRaw) => {
-    const o: Record<string, unknown> = { name: s.name, he: s.he, desc: s.desc, img: s.img }
+    const o: Record<string, unknown> = { name: s.name, desc: s.desc, img: s.img }
     const lat = num(s.lat), lng = num(s.lng)
     if (lat != null) o.lat = lat
     if (lng != null) o.lng = lng

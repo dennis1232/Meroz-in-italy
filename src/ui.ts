@@ -1,4 +1,4 @@
-import type { Stop } from './data'
+import type { Stop } from './types'
 
 export const BASE = import.meta.env.BASE_URL
 export const logo = `${BASE}assets/logo.png`
@@ -13,7 +13,7 @@ export const TAG_EMOJI: Record<string, string> = {
 }
 
 // Google Maps by name (gives photos/reviews) — not lat/lng, so the user keeps context.
-export const gmaps = (s: { name: string; lat?: number; lng?: number }) =>
+export const gmaps = (s: { name: string }) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name + ' Italy')}`
 
 export const waze = (s: { lat: number; lng: number }) => `waze://?ll=${s.lat},${s.lng}&navigate=yes`
@@ -21,7 +21,7 @@ export const waze = (s: { lat: number; lng: number }) => `waze://?ll=${s.lat},${
 export const isIOS = typeof navigator !== 'undefined' && /iphone|ipad|ipod/i.test(navigator.userAgent)
 export const isStandalone =
   typeof window !== 'undefined' &&
-  (window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true)
+  (window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true)
 
 export function copyTripLink(tripId: string): Promise<void> {
   return navigator.clipboard.writeText(`${location.origin}/trip/${tripId}`)
@@ -34,7 +34,7 @@ export function copyTripLink(tripId: string): Promise<void> {
 export function navForStop(stops: Stop[], i: number): {
   isDrive: boolean
   icon: string | null
-  wazeTarget: Stop | undefined
+  wazeTarget: (Stop & { lat: number; lng: number }) | undefined
 } {
   const s = stops[i]
   const isDrive = !!s.move && !s.via
@@ -43,8 +43,8 @@ export function navForStop(stops: Stop[], i: number): {
   const nextMoveIdx = stopsAfter.findIndex((x) => x.move)
   const untilNextMove = nextMoveIdx === -1 ? stopsAfter : stopsAfter.slice(0, nextMoveIdx)
   const hasNearbyParking = untilNextMove.some((x) => x.parking)
-  const wazeTarget = isDrive && !hasNearbyParking
+  const wazeTarget = (isDrive && !hasNearbyParking
     ? (s.lat != null ? s : stopsAfter.find((x) => x.lat != null))
-    : undefined
+    : undefined) as (Stop & { lat: number; lng: number }) | undefined
   return { isDrive, icon, wazeTarget }
 }

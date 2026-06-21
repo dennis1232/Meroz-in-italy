@@ -1,4 +1,4 @@
-import { t, lang, TIPS_HE, TIPS_EN } from '../i18n'
+import { t, lang, TIPS_HE, TIPS_EN } from '../../i18n'
 
 export default function Tips({ openIntro }: { openIntro: () => void }) {
   const items = lang() === 'en' ? TIPS_EN : TIPS_HE

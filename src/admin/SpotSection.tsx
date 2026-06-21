@@ -13,7 +13,7 @@ export default function SpotSection({ title, list, onChange }: Props) {
     if (j < 0 || j >= a.length) return
     ;[a[i], a[j]] = [a[j], a[i]]; onChange(a)
   }
-  const add = () => onChange([...list, { name: 'New', he: '', desc: '', img: '', lat: '', lng: '' }])
+  const add = () => onChange([...list, { name: 'New', desc: '', img: '', lat: '', lng: '' }])
 
   return (
     <div className="adm-day">

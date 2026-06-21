@@ -1,5 +1,5 @@
-import type { Tab } from '../ui'
-import { t } from '../i18n'
+import type { Tab } from '../../ui'
+import { t } from '../../i18n'
 
 const TABS: { id: Tab; ic: string; key: 'tabHome' | 'tabTrip' | 'tabMap' | 'tabSee' | 'tabMore' }[] = [
   { id: 'home', ic: '🏠', key: 'tabHome' },

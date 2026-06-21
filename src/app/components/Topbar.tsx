@@ -1,4 +1,4 @@
-import { logo } from '../ui'
+import { logo } from '../../ui'
 
 export default function Topbar({ title, sub }: { title: string; sub: string }) {
   return (

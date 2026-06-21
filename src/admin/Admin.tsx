@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { rawTrip } from '../data'
+import { rawTrip } from '../store'
 import { toRaw, toClean, type DayRaw, type TripRaw } from '../tripUtils'
 import { saveTrip } from '../cloud'
 import { copyTripLink } from '../ui'

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { days } from '../data'
-import { t } from '../i18n'
+import { days } from '../../store'
+import { t } from '../../i18n'
 import Topbar from './Topbar'
 import DayCard from './DayCard'
 
