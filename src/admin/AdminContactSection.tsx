@@ -15,6 +15,7 @@ export default function AdminContactSection({ contact, onChange }: Props) {
         </label>
         <label>Phone IL
           <input
+            type="tel"
             value={contact.phoneIL}
             onChange={(e) => onChange({
               ...contact,
@@ -25,6 +26,7 @@ export default function AdminContactSection({ contact, onChange }: Props) {
         </label>
         <label>Phone IT
           <input
+            type="tel"
             value={contact.phoneIT}
             onChange={(e) => onChange({
               ...contact,

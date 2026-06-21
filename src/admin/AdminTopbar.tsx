@@ -23,7 +23,7 @@ export default function AdminTopbar({
         <button className="adm-btn adm-save" onClick={onSave} disabled={saving}>
           {saving ? '⏳ Saving…' : '☁️ Save'}
         </button>
-        {saveErr && <span style={{ color: '#f87171', fontSize: 12 }}>{saveErr}</span>}
+        {saveErr && <span className="adm-topbar-err">{saveErr}</span>}
         <button className="adm-btn adm-preview" onClick={onPreview}>👁 Preview</button>
         <button className="adm-btn adm-preview" onClick={onShare}>
           {shareMsg || '🔗 Copy link'}

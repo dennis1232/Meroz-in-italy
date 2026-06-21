@@ -70,10 +70,11 @@ function sbUrl(path: string) {
 
 export async function saveTrip(tripId: string, tripData: unknown): Promise<void> {
   if (import.meta.env.VITE_USE_SUPABASE === 'true') {
+    const cover = (tripData as any)?.meta?.cover ?? null
     const res = await fetch(sbUrl('trips'), {
       method: 'POST',
       headers: { ...sbHeaders(), Prefer: 'resolution=merge-duplicates' },
-      body: JSON.stringify({ id: tripId, data: tripData }),
+      body: JSON.stringify({ id: tripId, data: tripData, cover }),
     })
     if (!res.ok) throw new Error(`Save failed: ${await res.text()}`)
   } else {
@@ -117,7 +118,7 @@ export async function manageTrip(body: ManageTripBody): Promise<{ newTripId?: st
       const res = await fetch(sbUrl('trips'), {
         method: 'POST',
         headers: { ...sbHeaders(), Prefer: 'resolution=merge-duplicates' },
-        body: JSON.stringify({ id: body.newTripId, data }),
+        body: JSON.stringify({ id: body.newTripId, data, cover: data.meta?.cover ?? null }),
       })
       if (!res.ok) throw new Error(await res.text())
       return { newTripId: body.newTripId, title: data.meta.title, tripData: data }

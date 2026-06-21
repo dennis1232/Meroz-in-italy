@@ -2,7 +2,7 @@ import { useState, type FormEvent, type MouseEvent } from 'react'
 import { manageTrip } from '../cloud'
 import { toClean, toRaw } from '../tripUtils'
 
-export type TripEntry = { id: string; title: string; startISO: string; endISO: string }
+export type TripEntry = { id: string; title: string; startISO: string; endISO: string; cover?: string }
 
 type ModalState =
   | { kind: 'none' }

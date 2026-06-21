@@ -13,10 +13,9 @@ type Props = {
 function CoverPreview({ meta, onReplace }: { meta: TripRaw['meta']; onReplace: (v: string) => void }) {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const [dragging, setDragging] = useState(false)
 
-  const pick = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const upload = async (file: File) => {
     setBusy(true)
     setErr('')
     try {
@@ -25,8 +24,25 @@ function CoverPreview({ meta, onReplace }: { meta: TripRaw['meta']; onReplace: (
       setErr(String(ex))
     } finally {
       setBusy(false)
-      e.target.value = ''
     }
+  }
+
+  const pick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    await upload(file)
+    e.target.value = ''
+  }
+
+  const onDrop = async (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file && file.type.startsWith('image/')) await upload(file)
+  }
+
+  const onDragLeave = (e: React.DragEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragging(false)
   }
 
   const dateStr = meta.startISO && meta.endISO
@@ -34,7 +50,20 @@ function CoverPreview({ meta, onReplace }: { meta: TripRaw['meta']; onReplace: (
     : 'dd/mm – dd/mm'
 
   return (
-    <div className="adm-cover-preview-wrap">
+    <div
+      className={`adm-photo adm-cover-preview-wrap${dragging ? ' adm-photo-drag' : ''}`}
+      onDragOver={e => { e.preventDefault(); setDragging(true) }}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+    >
+      <div className="adm-photo-top">
+        <span>Cover photo</span>
+        <label className="adm-photo-btn">
+          {busy ? '⏳…' : meta.cover ? '🔄 Replace' : '📷 Upload'}
+          <input type="file" accept="image/*" onChange={pick} hidden />
+        </label>
+      </div>
+      {err && <p className="adm-error">{err}</p>}
       <div
         className="adm-cover-preview"
         style={meta.cover ? { backgroundImage: `url(${A(meta.cover)})` } : undefined}
@@ -45,12 +74,7 @@ function CoverPreview({ meta, onReplace }: { meta: TripRaw['meta']; onReplace: (
           <div className="adm-cover-preview-dates" dir="ltr">{dateStr}</div>
           {meta.who && <div className="adm-cover-preview-who">{meta.who}</div>}
         </div>
-        <label className="adm-cover-preview-btn">
-          {busy ? '⏳…' : meta.cover ? '🔄 Replace photo' : '📷 Upload photo'}
-          <input type="file" accept="image/*" onChange={pick} hidden />
-        </label>
       </div>
-      {err && <div style={{ color: 'red', fontSize: 12, marginTop: 6 }}>{err}</div>}
     </div>
   )
 }

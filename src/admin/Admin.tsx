@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { rawTrip } from '../store'
-import { toRaw, toClean, type DayRaw, type TripRaw } from '../tripUtils'
+import { toRaw, toClean, isoToFields, type DayRaw, type TripRaw } from '../tripUtils'
 import { saveTrip } from '../cloud'
 import { copyTripLink } from '../ui'
 import AdminTopbar from './AdminTopbar'
@@ -24,6 +24,7 @@ export default function Admin({ tripId }: Props) {
   const [saving, setSaving] = useState(false)
   const [saveErr, setSaveErr] = useState('')
   const [shareMsg, setShareMsg] = useState('')
+  const [activeId, setActiveId] = useState('adm-cover')
   const broadcastRef = useRef<BroadcastChannel | null>(null)
 
   useEffect(() => {
@@ -44,7 +45,20 @@ export default function Admin({ tripId }: Props) {
     return () => clearTimeout(id)
   }, [trip, tripId])
 
-  const saveToCloud = async () => {
+  // scroll-spy
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      entries => {
+        entries.forEach(e => { if (e.isIntersecting) setActiveId(e.target.id) })
+      },
+      { rootMargin: '-10% 0px -80% 0px', threshold: 0 }
+    )
+    const ids = ['adm-cover', ...trip.days.map(d => `adm-day-${d.n}`), 'adm-recs', 'adm-contact']
+    ids.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el) })
+    return () => obs.disconnect()
+  }, [trip.days.length])
+
+  const saveToCloud = useCallback(async () => {
     setSaving(true)
     setSaveErr('')
     try {
@@ -54,7 +68,19 @@ export default function Admin({ tripId }: Props) {
     } finally {
       setSaving(false)
     }
-  }
+  }, [tripId, trip])
+
+  // Cmd+S / Ctrl+S
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault()
+        saveToCloud()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [saveToCloud])
 
   const setMeta = (k: keyof TripRaw['meta'], v: string) =>
     setTrip({ ...trip, meta: { ...trip.meta, [k]: v } })
@@ -78,6 +104,29 @@ export default function Admin({ tripId }: Props) {
       days: [...trip.days, { n, date: '', dow: '', en: '', iso: '', hero: '', title: '', intro: '', stops: [] }]
     })
   }
+
+  const generateDaysFromDates = () => {
+    const { startISO, endISO } = trip.meta
+    if (!startISO || !endISO) return
+    const existingIsos = new Set(trip.days.map(d => d.iso))
+    const newDays: DayRaw[] = []
+    const cur = new Date(startISO + 'T00:00:00')
+    const end = new Date(endISO + 'T00:00:00')
+    while (cur <= end) {
+      const iso = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`
+      if (!existingIsos.has(iso)) {
+        const f = isoToFields(iso)
+        newDays.push({ n: 0, iso, date: f.date, dow: f.dow, en: f.en, hero: '', title: '', intro: '', stops: [] })
+      }
+      cur.setDate(cur.getDate() + 1)
+    }
+    const allDays = [...trip.days, ...newDays]
+      .sort((a, b) => (a.iso ?? '').localeCompare(b.iso ?? ''))
+      .map((d, i) => ({ ...d, n: i + 1 }))
+    setTrip({ ...trip, days: allDays })
+  }
+
+  const canGenerateDays = !!(trip.meta.startISO && trip.meta.endISO)
 
   const navTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -109,7 +158,7 @@ export default function Admin({ tripId }: Props) {
       />
 
       <div className="adm-body">
-        <AdminNav days={trip.days} onNav={navTo} onAddDay={addDay} />
+        <AdminNav days={trip.days} activeId={activeId} onNav={navTo} onAddDay={addDay} />
 
         <div className="adm-main">
           <AdminCoverSection meta={trip.meta} onMeta={setMeta} />
@@ -117,6 +166,9 @@ export default function Admin({ tripId }: Props) {
           <div className="adm-section">
             <div className="adm-stops-hd">
               <h2>Days ({trip.days.length})</h2>
+              {canGenerateDays && (
+                <button className="adm-add" onClick={generateDaysFromDates}>⚡ Generate from dates</button>
+              )}
             </div>
             {trip.days.map((d, i) => (
               <DayEditor

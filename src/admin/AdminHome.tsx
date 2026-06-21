@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { copyTripLink } from '../ui'
 import AdminModal, { ModalActions, ModalField } from './AdminModal'
 import AdminTripCard from './AdminTripCard'
+import AdminTripWizard from './AdminTripWizard'
 import { useAdminModals, type TripEntry } from './useAdminModals'
 
 export default function AdminHome() {
@@ -9,27 +10,35 @@ export default function AdminHome() {
   const [error, setError] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  const [sort, setSort] = useState<'updated' | 'alpha'>('updated')
+  const [loading, setLoading] = useState(true)
+  const [wizOpen, setWizOpen] = useState(false)
 
   const reload = useCallback(async () => {
-    if (import.meta.env.VITE_USE_SUPABASE === 'true') {
-      const url = import.meta.env.VITE_SUPABASE_URL
-      const key = import.meta.env.VITE_SUPABASE_ANON_KEY
-      const res = await fetch(
-        `${url}/rest/v1/trips?select=id,title,start_iso,end_iso&order=updated_at.desc`,
-        { headers: { apikey: key, Authorization: `Bearer ${key}` } }
-      )
-      if (!res.ok) throw new Error(await res.text())
-      const rows = await res.json()
-      setTrips(rows.map((r: any) => ({ id: r.id, title: r.title ?? r.id, startISO: r.start_iso ?? '', endISO: r.end_iso ?? '' })))
-      return
-    }
+    setLoading(true)
     try {
-      const res = await fetch('/.netlify/functions/list-trips', { cache: 'no-cache' })
-      if (res.ok) { setTrips(await res.json()); return }
-    } catch { /* local dev without functions */ }
-    const res = await fetch(`${import.meta.env.BASE_URL}trips/index.json`, { cache: 'no-cache' })
-    if (!res.ok) throw new Error(res.status.toString())
-    setTrips(await res.json())
+      if (import.meta.env.VITE_USE_SUPABASE === 'true') {
+        const url = import.meta.env.VITE_SUPABASE_URL
+        const key = import.meta.env.VITE_SUPABASE_ANON_KEY
+        const res = await fetch(
+          `${url}/rest/v1/trips?select=id,title,start_iso,end_iso,cover&order=updated_at.desc`,
+          { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+        )
+        if (!res.ok) throw new Error(await res.text())
+        const rows = await res.json()
+        setTrips(rows.map((r: any) => ({ id: r.id, title: r.title ?? r.id, startISO: r.start_iso ?? '', endISO: r.end_iso ?? '', cover: r.cover ?? '' })))
+        return
+      }
+      try {
+        const res = await fetch('/.netlify/functions/list-trips', { cache: 'no-cache' })
+        if (res.ok) { setTrips(await res.json()); return }
+      } catch { /* local dev without functions */ }
+      const res = await fetch(`${import.meta.env.BASE_URL}trips/index.json`, { cache: 'no-cache' })
+      if (!res.ok) throw new Error(res.status.toString())
+      setTrips(await res.json())
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => {
@@ -49,14 +58,15 @@ export default function AdminHome() {
   }
 
   const q = query.trim().toLowerCase()
-  const filtered = q ? trips.filter(t => t.title.toLowerCase().includes(q) || t.id.toLowerCase().includes(q)) : trips
+  const matched = q ? trips.filter(t => t.title.toLowerCase().includes(q) || t.id.toLowerCase().includes(q)) : trips
+  const filtered = sort === 'alpha' ? [...matched].sort((a, b) => a.title.localeCompare(b.title)) : matched
 
   return (
     <div className="adm-root adm-home" dir="ltr">
       <div className="adm-topbar">
-        <h1>Trips</h1>
+        <h1>Trips <span className="adm-trip-count-hd">{trips.length}</span></h1>
         <div className="adm-actions">
-          <button type="button" className="adm-btn adm-btn-accent" onClick={openNew}>+ New trip</button>
+          <button type="button" className="adm-btn adm-btn-accent" onClick={() => setWizOpen(true)}>+ New trip</button>
         </div>
       </div>
 
@@ -69,39 +79,55 @@ export default function AdminHome() {
               <span className="adm-trip-search-label">Search</span>
               <input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Name or trip ID…" />
             </label>
-            <span className="adm-trip-count">{filtered.length} trip{filtered.length === 1 ? '' : 's'}</span>
+            <label className="adm-sort-select">
+              <span className="adm-trip-search-label">Sort</span>
+              <select value={sort} onChange={e => setSort(e.target.value as 'updated' | 'alpha')}>
+                <option value="updated">Newest first</option>
+                <option value="alpha">A → Z</option>
+              </select>
+            </label>
           </div>
         )}
 
-        {!error && trips.length === 0 && (
+        {loading && (
+          <div className="adm-trip-list">
+            {Array.from({ length: 6 }).map((_, i) => <div key={i} className="adm-trip-card adm-trip-card-skel" />)}
+          </div>
+        )}
+
+        {!loading && !error && trips.length === 0 && (
           <div className="adm-empty">
             <p>No trips yet</p>
-            <button type="button" className="adm-modal-btn adm-modal-primary adm-empty-btn" onClick={openNew}>
+            <button type="button" className="adm-modal-btn adm-modal-primary adm-empty-btn" onClick={() => setWizOpen(true)}>
               Create your first trip
             </button>
           </div>
         )}
 
-        {!error && trips.length > 0 && filtered.length === 0 && (
+        {!loading && !error && trips.length > 0 && filtered.length === 0 && (
           <div className="adm-empty"><p>No trips match "{query.trim()}".</p></div>
         )}
 
-        <div className="adm-trip-list">
-          {filtered.map(t => (
-            <AdminTripCard
-              key={t.id}
-              trip={t}
-              disabled={modalBusy}
-              copiedId={copiedId}
-              onOpen={() => { location.href = `/admin/${t.id}` }}
-              onRename={e => openRename(e, t)}
-              onDuplicate={e => openDuplicate(e, t)}
-              onCopyLink={e => copyLink(e, t)}
-              onDelete={e => openDelete(e, t)}
-            />
-          ))}
-        </div>
+        {!loading && (
+          <div className="adm-trip-list">
+            {filtered.map(t => (
+              <AdminTripCard
+                key={t.id}
+                trip={t}
+                disabled={modalBusy}
+                copiedId={copiedId}
+                onOpen={() => { location.href = `/admin/${t.id}` }}
+                onRename={e => openRename(e, t)}
+                onDuplicate={e => openDuplicate(e, t)}
+                onCopyLink={e => copyLink(e, t)}
+                onDelete={e => openDelete(e, t)}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      <AdminTripWizard open={wizOpen} trips={trips} onClose={() => setWizOpen(false)} />
 
       <AdminModal open={modal.kind === 'new'} title="New trip" onClose={closeModal}
         footer={<ModalActions onCancel={closeModal} submitLabel="Create trip" onSubmit={() => submitNew()} disabled={!newId.trim()} />}>

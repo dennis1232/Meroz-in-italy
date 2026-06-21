@@ -17,15 +17,15 @@ export default function SpotSection({ title, list, onChange }: Props) {
 
   return (
     <div className="adm-day">
-      <div className="adm-day-hd" onClick={() => setOpen((o) => !o)}>
+      <div className="adm-day-hd" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
         <b>{title}</b>
-        <span className="adm-day-title">{list.length} items</span>
+        <span className="adm-day-title">{list.length} item{list.length !== 1 ? 's' : ''}</span>
         <span>{open ? '▲' : '▼'}</span>
       </div>
       {open && (
         <div className="adm-day-body">
           <div className="adm-stops-hd">
-            <b>{list.length} items</b>
+            <b>{list.length} item{list.length !== 1 ? 's' : ''}</b>
             <button className="adm-add" onClick={add}>+ Add</button>
           </div>
           {list.map((s, i) => (

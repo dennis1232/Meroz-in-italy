@@ -22,7 +22,7 @@ export default function StopRow({ stop, onChange, onDelete, onMove }: Props) {
 
   return (
     <div className="adm-stop">
-      <div className="adm-stop-hd" onClick={() => setOpen((o) => !o)}>
+      <div className="adm-stop-hd" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
         <span className="adm-stop-lbl">{label}</span>
         <div className="adm-stop-acts">
           <button onClick={(e) => { e.stopPropagation(); onMove(-1) }}>↑</button>
@@ -57,7 +57,7 @@ export default function StopRow({ stop, onChange, onDelete, onMove }: Props) {
               <textarea rows={3} value={stop.desc || ''} onChange={(e) => set('desc', e.target.value || undefined)} />
             </label>
           </div>
-          <div className="adm-stop-right">
+          <div className="adm-stop-media">
             <LocationField
               lat={stop.lat}
               lng={stop.lng}
@@ -69,26 +69,26 @@ export default function StopRow({ stop, onChange, onDelete, onMove }: Props) {
                 mapLink: link || undefined
               })}
             />
-            <div className="adm-checks">
+          </div>
+          <div className="adm-checks">
+            <label>
+              <input type="checkbox" checked={!!stop.move} onChange={(e) => set('move', e.target.checked || undefined)} />
+              Move leg
+            </label>
+            <label>
+              <input type="checkbox" checked={!!stop.parking} onChange={(e) => set('parking', e.target.checked || undefined)} />
+              Parking
+            </label>
+            {stop.move && (
               <label>
-                <input type="checkbox" checked={!!stop.move} onChange={(e) => set('move', e.target.checked || undefined)} />
-                Move leg
+                Via
+                <select value={stop.via || ''} onChange={(e) => set('via', e.target.value || undefined)}>
+                  <option value="">🚗 drive</option>
+                  <option value="train">🚆 train</option>
+                  <option value="flight">✈️ flight</option>
+                </select>
               </label>
-              <label>
-                <input type="checkbox" checked={!!stop.parking} onChange={(e) => set('parking', e.target.checked || undefined)} />
-                Parking
-              </label>
-              {stop.move && (
-                <label>
-                  Via
-                  <select value={stop.via || ''} onChange={(e) => set('via', e.target.value || undefined)}>
-                    <option value="">🚗 drive</option>
-                    <option value="train">🚆 train</option>
-                    <option value="flight">✈️ flight</option>
-                  </select>
-                </label>
-              )}
-            </div>
+            )}
           </div>
         </div>
       )}

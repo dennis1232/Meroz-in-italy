@@ -12,6 +12,7 @@ type Props = {
 
 export default function DayEditor({ day, onChange, onDelete, id }: Props) {
   const [open, setOpen] = useState(false)
+  const [quickName, setQuickName] = useState('')
   const set = (k: keyof DayRaw, v: unknown) => onChange({ ...day, [k]: v })
 
   const setDate = (iso: string) => {
@@ -29,53 +30,61 @@ export default function DayEditor({ day, onChange, onDelete, id }: Props) {
     if (j < 0 || j >= stops.length) return
     ;[stops[i], stops[j]] = [stops[j], stops[i]]; set('stops', stops)
   }
-  const addStop = () => set('stops', [...day.stops, { name: 'New stop' }])
+  const addStop = (name = 'New stop') => set('stops', [...day.stops, { name }])
+
+  const quickAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && quickName.trim()) {
+      addStop(quickName.trim())
+      setQuickName('')
+    }
+  }
 
   return (
     <div className="adm-day" id={id}>
-      <div className="adm-day-hd" onClick={() => setOpen((o) => !o)}>
+      <div className="adm-day-hd" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
         <b>Day {day.n}</b>
         <span className="adm-day-title">{day.dow} · {day.date} — {day.title}</span>
-        <button className="adm-del" onClick={(e) => { e.stopPropagation(); onDelete() }}>✕</button>
-        <span>{open ? '▲' : '▼'}</span>
+        <button className="adm-del" aria-label="Delete day" onClick={(e) => { e.stopPropagation(); onDelete() }}>✕</button>
+        <span aria-hidden="true">{open ? '▲' : '▼'}</span>
       </div>
 
       {open && (
         <div className="adm-day-body">
-          <div className="adm-day-meta">
-            <div className="adm-day-meta-left">
-              <div className="adm-row2">
-                <label>
-                  📅 Date
-                  <input type="date" value={day.iso || ''} onChange={(e) => setDate(e.target.value)} />
-                </label>
-                <div className="adm-derived">
-                  {day.iso
-                    ? <>→ {day.date} · {day.dow} · {day.en}</>
-                    : 'pick a date'}
-                </div>
-              </div>
-              <label>
-                Title (banner)
-                <input value={day.title} onChange={(e) => set('title', e.target.value)} />
-              </label>
-              <label>
-                Intro
-                <textarea rows={4} value={day.intro} onChange={(e) => set('intro', e.target.value)} />
-              </label>
+          <div className="adm-row2">
+            <label>
+              📅 Date
+              <input type="date" value={day.iso || ''} onChange={(e) => setDate(e.target.value)} />
+            </label>
+            <div className="adm-derived">
+              {day.iso ? <>→ {day.date} · {day.dow} · {day.en}</> : 'pick a date'}
             </div>
-            <div className="adm-day-meta-right">
-              <PhotoField label="Hero photo" value={day.hero} onSet={(v) => set('hero', v)} />
-            </div>
+          </div>
+          <label>
+            Title (banner)
+            <input value={day.title} onChange={(e) => set('title', e.target.value)} />
+          </label>
+          <label>
+            Intro
+            <textarea value={day.intro} onChange={(e) => set('intro', e.target.value)} />
+          </label>
+          <div className="adm-stop-media">
+            <PhotoField label="Hero photo" value={day.hero} onSet={(v) => set('hero', v)} />
           </div>
 
           <div className="adm-stops-hd">
             <b>Stops ({day.stops.length})</b>
-            <button className="adm-add" onClick={addStop}>+ Add stop</button>
+            <button className="adm-add" onClick={() => addStop()}>+ Add stop</button>
           </div>
           {day.stops.map((s, i) => (
             <StopRow key={i} stop={s} onChange={(ns) => setStop(i, ns)} onDelete={() => delStop(i)} onMove={(dir) => moveStop(i, dir)} />
           ))}
+          <input
+            className="adm-quick-add"
+            placeholder="Add stop name…"
+            value={quickName}
+            onChange={e => setQuickName(e.target.value)}
+            onKeyDown={quickAdd}
+          />
         </div>
       )}
     </div>
