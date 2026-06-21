@@ -4,7 +4,8 @@ import App from './App'
 import Admin from './admin/Admin'
 import AdminHome from './admin/AdminHome'
 import NotFound from './components/NotFound'
-import { loadTrip, initTrip } from './data'
+import { loadTrip, initTrip, meta } from './data'
+import { applyTripPwa } from './pwaManifest'
 
 // bundled fonts (work offline)
 import '@fontsource/playfair-display/400.css'
@@ -48,13 +49,17 @@ if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
   if (isPreview && previewRaw) {
     try {
       initTrip(JSON.parse(previewRaw))
+      applyTripPwa(tripId, meta)
       root.render(<React.StrictMode><App /></React.StrictMode>)
     } catch {
       showNotFound()
     }
   } else {
     loadTrip(tripId)
-      .then(() => root.render(<React.StrictMode><App /></React.StrictMode>))
+      .then(() => {
+        applyTripPwa(tripId, meta)
+        root.render(<React.StrictMode><App /></React.StrictMode>)
+      })
       .catch(() => showNotFound())
   }
 

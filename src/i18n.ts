@@ -47,7 +47,7 @@ const S = {
   introAndStep1:     { he: 'פתחו את תפריט הדפדפן ⋮', en: 'Open browser menu ⋮' },
   introAndStep2:     { he: 'בחרו "התקן אפליקציה" או "הוסף למסך הבית"', en: 'Tap "Install app" or "Add to Home Screen"' },
   introAndStep3:     { he: 'אשרו ← מוכן!', en: 'Confirm ← done!' },
-  introIconNote:     { he: 'כך תקבלו אייקון משלכם ומסך מלא בלי שורת הדפדפן.', en: 'You\'ll get your own icon and a fullscreen experience without the browser bar.' },
+  introIconNote:     { he: 'הקיצור במסך הבית יפתח ישירות את מדריך הטיול שלכם.', en: 'The home screen shortcut opens your trip guide directly.' },
   introDontShow:     { he: 'אל תציגו לי שוב', en: "Don't show again" },
   introClose:        { he: 'הבנתי, יאללה בואו נתחיל 😊', en: "Got it, let's go 😊" },
 } satisfies Record<string, Record<Lang, string>>

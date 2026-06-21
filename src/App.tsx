@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { days, meta, currentTripId, initTrip } from "./data";
+import { applyTripPwa } from "./pwaManifest";
 import { isStandalone, type Tab } from "./ui";
 import TabBar from "./components/TabBar";
 import IntroModal from "./components/IntroModal";
@@ -20,10 +21,15 @@ export default function App() {
     const ch = new BroadcastChannel(`meroz-trip-${currentTripId}`);
     ch.onmessage = (e) => {
       initTrip(e.data);
+      applyTripPwa(currentTripId, meta);
       setTripVer((v) => v + 1);
     };
     return () => ch.close();
   }, []);
+
+  useEffect(() => {
+    applyTripPwa(currentTripId, meta);
+  }, [tripVer]);
 
   useEffect(() => {
     if (!isStandalone && !localStorage.getItem("meroz_intro_seen"))
