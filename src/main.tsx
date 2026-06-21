@@ -4,7 +4,7 @@ import App from './App'
 import Admin from './admin/Admin'
 import AdminHome from './admin/AdminHome'
 import NotFound from './components/NotFound'
-import { loadTrip, initTrip, meta } from './data'
+import { loadTrip, initTrip, meta, setCurrentTripId } from './data'
 import { applyTripPwa, redirectStandaloneToSavedTrip, setTripManifestLink } from './pwaManifest'
 
 // bundled fonts (work offline)
@@ -50,6 +50,7 @@ if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
   if (isPreview && previewRaw) {
     try {
       initTrip(JSON.parse(previewRaw))
+      setCurrentTripId(tripId)
       applyTripPwa(tripId, meta)
       root.render(<React.StrictMode><App /></React.StrictMode>)
     } catch {

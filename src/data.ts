@@ -83,6 +83,8 @@ export function initTrip(raw: any) {
   places = (raw.places || []).map((s: any) => ({ ...s, img: A(s.img) }))
 }
 
+export function setCurrentTripId(id: string) { currentTripId = id }
+
 export async function loadTrip(tripId: string): Promise<void> {
   currentTripId = tripId
   const res = await fetch(`${import.meta.env.BASE_URL}trips/${tripId}.json`, { cache: 'no-cache' })

@@ -1,9 +1,58 @@
+import { A, ddmm } from '../data'
+import { logo } from '../ui'
 import { type TripRaw } from '../tripUtils'
-import PhotoField from './fields/PhotoField'
+import { getCloudConfig, uploadImage } from '../cloud'
+import { fileToDataUrl } from './utils'
+import { useState } from 'react'
 
 type Props = {
   meta: TripRaw['meta']
   onMeta: (k: keyof TripRaw['meta'], v: string) => void
+}
+
+function CoverPreview({ meta, onReplace }: { meta: TripRaw['meta']; onReplace: (v: string) => void }) {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+
+  const pick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setBusy(true)
+    setErr('')
+    try {
+      onReplace(getCloudConfig() ? await uploadImage(file) : await fileToDataUrl(file))
+    } catch (ex) {
+      setErr(String(ex))
+    } finally {
+      setBusy(false)
+      e.target.value = ''
+    }
+  }
+
+  const dateStr = meta.startISO && meta.endISO
+    ? `${ddmm(meta.startISO)} – ${ddmm(meta.endISO)}`
+    : 'dd/mm – dd/mm'
+
+  return (
+    <div className="adm-cover-preview-wrap">
+      <div
+        className="adm-cover-preview"
+        style={meta.cover ? { backgroundImage: `url(${A(meta.cover)})` } : undefined}
+      >
+        <div className="adm-cover-preview-overlay" />
+        <div className="adm-cover-preview-content">
+          <img className="adm-cover-preview-logo" src={logo} alt="" />
+          <div className="adm-cover-preview-dates" dir="ltr">{dateStr}</div>
+          {meta.who && <div className="adm-cover-preview-who">{meta.who}</div>}
+        </div>
+        <label className="adm-cover-preview-btn">
+          {busy ? '⏳…' : meta.cover ? '🔄 Replace photo' : '📷 Upload photo'}
+          <input type="file" accept="image/*" onChange={pick} hidden />
+        </label>
+      </div>
+      {err && <div style={{ color: 'red', fontSize: 12, marginTop: 6 }}>{err}</div>}
+    </div>
+  )
 }
 
 export default function AdminCoverSection({ meta, onMeta }: Props) {
@@ -24,7 +73,7 @@ export default function AdminCoverSection({ meta, onMeta }: Props) {
           </select>
         </label>
       </div>
-      <PhotoField label="Cover photo" value={meta.cover} onSet={(v) => onMeta('cover', v)} />
+      <CoverPreview meta={meta} onReplace={(v) => onMeta('cover', v)} />
     </div>
   )
 }

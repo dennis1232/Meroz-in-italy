@@ -16,7 +16,9 @@ type Props = { tripId: string }
 export default function Admin({ tripId }: Props) {
   const [trip, setTrip] = useState<TripRaw>(() => {
     const saved = localStorage.getItem(`draft-${tripId}`)
-    if (saved) return JSON.parse(saved)
+    if (saved) {
+      try { return JSON.parse(saved) } catch { localStorage.removeItem(`draft-${tripId}`) }
+    }
     return toRaw(rawTrip ?? { meta: { lang: 'he' }, contact: {}, days: [], attractions: [], places: [] })
   })
   const [saved, setSaved] = useState(false)

@@ -126,6 +126,10 @@ export default function AdminHome() {
       setFieldErr('Use lowercase letters, numbers, and hyphens only.')
       return
     }
+    if (trips.find(t => t.id === id)) {
+      setFieldErr('A trip with this ID already exists.')
+      return
+    }
     location.href = `/admin/${id}`
   }
 
@@ -166,6 +170,10 @@ export default function AdminHome() {
       return
     }
     if (!title) { setFieldErr('Enter a name for the copy.'); return }
+    if (trips.find(t => t.id === newTripId)) {
+      setFieldErr('A trip with this ID already exists.')
+      return
+    }
 
     setModalBusy(true)
     setFieldErr(null)

@@ -88,8 +88,10 @@ export const handler: Handler = async (event) => {
     // 2 — update index.json
     const indexPath = `${repoBase}/public/trips/index.json`
     const indexFile = await ghGet(cfg, indexPath)
-    const index: Array<{ id: string; title: string; startISO: string; endISO: string }> =
-      indexFile ? JSON.parse(Buffer.from(indexFile.content, 'base64').toString()) : []
+    let index: Array<{ id: string; title: string; startISO: string; endISO: string }> = []
+    if (indexFile) {
+      try { index = JSON.parse(Buffer.from(indexFile.content, 'base64').toString()) } catch { index = [] }
+    }
 
     const meta = tripData.meta as { title?: string; startISO?: string; endISO?: string }
     if (!index.find(e => e.id === tripId)) {

@@ -55,6 +55,7 @@ export async function uploadImage(file: File): Promise<string> {
       : ''
     throw new Error(msg ? `Cloudinary: ${msg}${detail}` : `Cloudinary upload failed: ${res.status}`)
   }
+  if (!json.secure_url) throw new Error('Cloudinary response missing secure_url')
   return json.secure_url as string
 }
 

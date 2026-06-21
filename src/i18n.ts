@@ -53,7 +53,7 @@ const S = {
 } satisfies Record<string, Record<Lang, string>>
 
 export function t(key: keyof typeof S): string {
-  const lang: Lang = (meta.lang ?? 'he') as Lang
+  const lang: Lang = (meta.lang || 'he') as Lang
   return S[key][lang]
 }
 
