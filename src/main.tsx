@@ -5,7 +5,7 @@ import Admin from './admin/Admin'
 import AdminHome from './admin/AdminHome'
 import NotFound from './components/NotFound'
 import { loadTrip, initTrip, meta } from './data'
-import { applyTripPwa, setTripManifestLink } from './pwaManifest'
+import { applyTripPwa, redirectStandaloneToSavedTrip, setTripManifestLink } from './pwaManifest'
 
 // bundled fonts (work offline)
 import '@fontsource/playfair-display/400.css'
@@ -65,5 +65,5 @@ if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
   }
 
 } else {
-  showNotFound()
+  if (!redirectStandaloneToSavedTrip()) showNotFound()
 }

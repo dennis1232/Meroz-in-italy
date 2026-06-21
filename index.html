@@ -10,15 +10,31 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Trip" />
   <link rel="apple-touch-icon" href="./icons/icon-192.png" />
-  <link rel="manifest" id="pwa-manifest" href="/manifest.webmanifest" />
   <title>Trip Guide</title>
   <script>
     (function () {
+      var KEY = 'meroz-pwa-trip';
+      var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      var path = location.pathname.replace(/\/$/, '') || '/';
+
+      if (standalone && path === '/') {
+        try {
+          var saved = localStorage.getItem(KEY);
+          if (saved && /^[a-z0-9-]+$/.test(saved)) {
+            location.replace('/trip/' + saved);
+            return;
+          }
+        } catch (e) {}
+      }
+
       var m = location.pathname.match(/^\/trip\/([^/?#]+)/);
       if (!m) return;
       var id = decodeURIComponent(m[1]);
-      var el = document.getElementById('pwa-manifest');
-      if (el) el.href = '/trip/' + encodeURIComponent(id) + '/manifest.webmanifest';
+      try { localStorage.setItem(KEY, id); } catch (e) {}
+      var link = document.createElement('link');
+      link.rel = 'manifest';
+      link.href = '/trip/' + encodeURIComponent(id) + '/manifest.webmanifest';
+      document.head.appendChild(link);
     })();
   </script>
 </head>

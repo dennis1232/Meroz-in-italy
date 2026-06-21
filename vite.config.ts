@@ -26,7 +26,8 @@ function tripManifestDev(): Plugin {
           }
         } catch { /* defaults */ }
 
-        const startUrl = `/trip/${tripId}`
+        const origin = `http://127.0.0.1:${server.config.server.port ?? 5173}`
+        const startUrl = `${origin}/trip/${tripId}`
         const shortName = title.length > 14 ? `${title.slice(0, 12)}…` : title
         const name = subtitle ? `${title} · ${subtitle}` : title
 
@@ -37,7 +38,7 @@ function tripManifestDev(): Plugin {
           short_name: shortName,
           description: subtitle || title,
           start_url: startUrl,
-          scope: '/',
+          scope: `${origin}/`,
           display: 'standalone',
           orientation: 'portrait',
           theme_color: '#9c3b2e',
@@ -45,9 +46,9 @@ function tripManifestDev(): Plugin {
           lang,
           dir: lang === 'en' ? 'ltr' : 'rtl',
           icons: [
-            { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-            { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-            { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+            { src: `${origin}/icons/icon-192.png`, sizes: '192x192', type: 'image/png' },
+            { src: `${origin}/icons/icon-512.png`, sizes: '512x512', type: 'image/png' },
+            { src: `${origin}/icons/icon-512.png`, sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
           ],
         }))
       })
@@ -73,25 +74,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['assets/**/*'],
-      manifest: {
-        name: 'Trip Guide',
-        short_name: 'Trip',
-        description: 'Travel itinerary',
-        start_url: '/404',
-        scope: '/',
-        lang: 'he',
-        dir: 'rtl',
-        theme_color: '#9c3b2e',
-        background_color: '#f3ecdf',
-        display: 'standalone',
-        orientation: 'portrait',
-        icons: [
-          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
-        ]
-      },
+      includeAssets: ['assets/**/*', 'icons/**/*'],
+      manifest: false,
       workbox: {
         clientsClaim: true,
         skipWaiting: true,
