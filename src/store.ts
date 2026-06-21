@@ -15,8 +15,8 @@ export let rawTrip: any = null
 
 export function initTrip(raw: any) {
   rawTrip = raw
-  meta = raw.meta
-  contact = raw.contact
+  meta = { title: '', subtitle: '', startISO: '', endISO: '', who: '', cover: '', lang: 'he', ...(raw.meta ?? {}) }
+  contact = { instagram: '', phoneIL: '', phoneILraw: '', phoneIT: '', phoneITraw: '', ...(raw.contact ?? {}) }
   days = (raw.days || []).map((d: any) => ({ ...d, hero: A(d.hero), stops: d.stops as Stop[] }))
   attractions = (raw.attractions || []).map((s: any) => ({ ...s, img: A(s.img) }))
   places = (raw.places || []).map((s: any) => ({ ...s, img: A(s.img) }))

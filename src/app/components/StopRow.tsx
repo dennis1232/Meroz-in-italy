@@ -35,7 +35,7 @@ export default function StopRow({ stops, i }: { stops: Stop[]; i: number }) {
       </div>
       <div className="acts">
         {s.parking && (s.mapLink || s.lat != null) && (
-          <a className="go waze park" href={s.mapLink || waze(s as any)}>{t('parkBtn')}</a>
+          <a className="go waze park" href={s.mapLink || (s.lat != null ? waze({ lat: s.lat, lng: s.lng! }) : '#')}>{t('parkBtn')}</a>
         )}
         {!s.parking && (s.mapLink || s.lat != null) && (
           <a className="go" href={s.mapLink || gmaps(s)} target="_blank" rel="noopener">{t('mapBtn')}</a>

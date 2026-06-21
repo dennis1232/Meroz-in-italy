@@ -13,7 +13,7 @@ export default function IntroModal({
 }) {
   const [dontShow, setDontShow] = useState(true)
   const close = () => {
-    if (dontShow) localStorage.setItem('meroz_intro_seen', '1')
+    if (dontShow) try { localStorage.setItem('meroz_intro_seen', '1') } catch { /* Safari private mode */ }
     onClose()
   }
   const install = async () => {

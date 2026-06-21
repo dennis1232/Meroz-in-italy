@@ -6,14 +6,13 @@ import { logo } from '../../ui'
 
 export default function Overview({ goToDay }: { goToDay: (n: number) => void }) {
   const now = new Date()
-  const start = new Date(meta.startISO)
-  const end = new Date(meta.endISO)
-  end.setDate(end.getDate() + 1)
+  const start = meta.startISO ? new Date(meta.startISO) : null
+  const end = meta.endISO ? new Date(meta.endISO + 'T23:59:59') : null
   const total = days.length
-  const dayN = now >= start && now < end
+  const dayN = start && end && now >= start && now <= end
     ? Math.floor((now.getTime() - start.getTime()) / 86400000) + 1
     : null
-  const daysLeft = now < start
+  const daysLeft = start && now < start
     ? Math.ceil((start.getTime() - now.getTime()) / 86400000)
     : null
 
@@ -28,7 +27,7 @@ export default function Overview({ goToDay }: { goToDay: (n: number) => void }) 
         <div className="countdown">{t('countdownPre')} <b>{daysLeft}</b> {t('countdownPost')}</div>
       )}
       {dayN !== null && (
-        <div className="countdown in-trip">🇮🇹 Day <b>{dayN}</b> / {total}</div>
+        <div className="countdown in-trip">🇮🇹 {t('dayLabel')} <b>{dayN}</b> {t('ofTotal')} {total}</div>
       )}
 
       <div className="section-script">

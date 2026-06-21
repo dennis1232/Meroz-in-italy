@@ -17,9 +17,9 @@ export default function DayCard({ d, defaultOpen, isToday }: { d: Day; defaultOp
         <img src={d.hero} alt={d.title} loading="lazy" />
         <div className="scrim" />
         <div className="badge">
-          <small>DAY</small>
+          <small>{t('dayBadge')}</small>
           <b>{d.n}</b>
-          {isToday && <span className="today-badge">TODAY</span>}
+          {isToday && <span className="today-badge">{t('todayBadge')}</span>}
         </div>
         <div className="meta">
           <div className="dow">{dow}</div>

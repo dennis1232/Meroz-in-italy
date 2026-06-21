@@ -24,6 +24,10 @@ const S = {
   openInMap: { he: 'פתח במפה ↗',   en: 'Open in maps ↗' },
 
   // day card
+  dayBadge:  { he: 'יום',  en: 'DAY' },
+  todayBadge: { he: 'היום', en: 'TODAY' },
+  dayLabel:  { he: 'יום',   en: 'Day' },
+  ofTotal:   { he: 'מתוך', en: '/' },
   openDay:  { he: 'פתח את היום', en: 'Open day' },
   closeDay: { he: 'סגור',        en: 'Close' },
 
@@ -32,6 +36,10 @@ const S = {
 
   // install / tips
   installHelp: { he: '📲 איך מוסיפים למסך הבית / עבודה אופליין', en: '📲 How to add to home screen / offline use' },
+
+  // calendar export feature
+  calendarExport: { he: 'ייצא ליומן', en: 'Add to Calendar' },
+  calendarDone:   { he: 'יומן יוצא!', en: 'Exported!' },
 
   // intro modal
   introWelcome:      { he: 'ברוכים הבאים 🇮🇹',     en: 'Welcome 🇮🇹' },

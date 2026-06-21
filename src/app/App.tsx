@@ -33,8 +33,9 @@ export default function App() {
   }, [tripVer]);
 
   useEffect(() => {
-    if (!isStandalone && !localStorage.getItem("meroz_intro_seen"))
-      setShowIntro(true);
+    let introSeen = false
+    try { introSeen = !!localStorage.getItem('meroz_intro_seen') } catch { /* Safari private mode */ }
+    if (!isStandalone && !introSeen) setShowIntro(true);
     const tds = ddmm(new Date().toISOString().slice(0, 10));
     const today = days.find((d) => d.date === tds);
     if (today) {

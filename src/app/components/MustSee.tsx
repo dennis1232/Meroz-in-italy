@@ -12,8 +12,8 @@ export default function MustSee() {
           <span className="h">ATTRACTIONS</span>
         </div>
         <div className="attr-grid">
-          {attractions.map((a) => (
-            <div className="attr" key={a.name}>
+          {attractions.map((a, i) => (
+            <div className="attr" key={i}>
               <img src={a.img} alt={a.name} loading="lazy" />
               <div className="t">{a.name}</div>
               <div className="d">{a.desc}</div>
@@ -27,8 +27,8 @@ export default function MustSee() {
           <span className="h">PLACES</span>
         </div>
         <div className="places-grid">
-          {places.map((p: Spot) => (
-            <a className="place" key={p.name} href={p.mapLink || gmaps(p)} target="_blank" rel="noopener">
+          {places.map((p: Spot, i) => (
+            <a className="place" key={i} href={p.mapLink || gmaps(p)} target="_blank" rel="noopener">
               <img src={p.img} alt={p.name} loading="lazy" />
               <span className="cap">{p.name}</span>
             </a>

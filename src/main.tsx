@@ -21,13 +21,14 @@ import './styles.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 const segments = location.pathname.replace(/\/$/, '').split('/').filter(Boolean)
+const SAFE_ID = /^[a-z0-9_-]+$/i
 
 function showNotFound() {
   root.render(<React.StrictMode><NotFound /></React.StrictMode>)
 }
 
 // Only /trip/{id} is a valid traveler route — never redirect to another trip
-if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
+if (segments[0] === 'trips' || (segments[0] === 'trip' && segments.length < 2)) {
   showNotFound()
 
 } else if (segments[0] === 'admin' && segments.length === 1) {
@@ -35,34 +36,42 @@ if (segments[0] === 'trips' || segments[0] === 'trip' && segments.length < 2) {
 
 } else if (segments[0] === 'admin' && segments.length >= 2) {
   const tripId = segments[1]
-  const hasDraft = !!localStorage.getItem(`draft-${tripId}`)
-  const boot = hasDraft
-    ? Promise.resolve()
-    : loadTrip(tripId).catch(err => console.error(`Failed to load trips/${tripId}.json`, err))
-  boot.finally(() => root.render(<React.StrictMode><Admin tripId={tripId} /></React.StrictMode>))
+  if (!SAFE_ID.test(tripId)) {
+    showNotFound()
+  } else {
+    const hasDraft = !!localStorage.getItem(`draft-${tripId}`)
+    const boot = hasDraft
+      ? Promise.resolve()
+      : loadTrip(tripId).catch(err => console.error(`Failed to load trips/${tripId}.json`, err))
+    boot.finally(() => root.render(<React.StrictMode><Admin tripId={tripId} /></React.StrictMode>))
+  }
 
 } else if (segments[0] === 'trip' && segments.length >= 2) {
   const tripId = segments[1]
-  setTripManifestLink(tripId)
-  const isPreview = new URLSearchParams(location.search).has('preview')
-  const previewRaw = isPreview ? localStorage.getItem(`preview-${tripId}`) : null
-
-  if (isPreview && previewRaw) {
-    try {
-      initTrip(JSON.parse(previewRaw))
-      setCurrentTripId(tripId)
-      applyTripPwa(tripId, meta)
-      root.render(<React.StrictMode><App /></React.StrictMode>)
-    } catch {
-      showNotFound()
-    }
+  if (!SAFE_ID.test(tripId)) {
+    showNotFound()
   } else {
-    loadTrip(tripId)
-      .then(() => {
+    setTripManifestLink(tripId)
+    const isPreview = new URLSearchParams(location.search).has('preview')
+    const previewRaw = isPreview ? localStorage.getItem(`preview-${tripId}`) : null
+
+    if (isPreview && previewRaw) {
+      try {
+        initTrip(JSON.parse(previewRaw))
+        setCurrentTripId(tripId)
         applyTripPwa(tripId, meta)
         root.render(<React.StrictMode><App /></React.StrictMode>)
-      })
-      .catch(() => showNotFound())
+      } catch {
+        showNotFound()
+      }
+    } else {
+      loadTrip(tripId)
+        .then(() => {
+          applyTripPwa(tripId, meta)
+          root.render(<React.StrictMode><App /></React.StrictMode>)
+        })
+        .catch(() => showNotFound())
+    }
   }
 
 } else {

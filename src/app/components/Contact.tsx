@@ -9,11 +9,13 @@ export default function Contact() {
       <img className="logo" src={logo} alt="Meroz In Italia" />
       <p>{t('thanks')}</p>
       <div className="lines">
-        <a className="row" href={`https://instagram.com/${contact.instagram}`} target="_blank" rel="noopener">
-          📸 @{contact.instagram}
-        </a>
-        <a className="row" href={`tel:${contact.phoneILraw}`}>🇮🇱 {contact.phoneIL}</a>
-        <a className="row" href={`tel:${contact.phoneITraw}`}>🇮🇹 {contact.phoneIT}</a>
+        {contact.instagram && (
+          <a className="row" href={`https://instagram.com/${contact.instagram}`} target="_blank" rel="noopener">
+            📸 @{contact.instagram}
+          </a>
+        )}
+        {contact.phoneIL && <a className="row" href={`tel:${contact.phoneILraw}`}>🇮🇱 {contact.phoneIL}</a>}
+        {contact.phoneIT && <a className="row" href={`tel:${contact.phoneITraw}`}>🇮🇹 {contact.phoneIT}</a>}
       </div>
       <div className="links">
         <a href="https://www.waze.com/" target="_blank" rel="noopener">Waze</a>

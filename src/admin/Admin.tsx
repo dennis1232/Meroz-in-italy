@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { rawTrip } from '../store'
 import { toRaw, toClean, type DayRaw, type TripRaw } from '../tripUtils'
 import { saveTrip } from '../cloud'
@@ -25,13 +25,19 @@ export default function Admin({ tripId }: Props) {
   const [saving, setSaving] = useState(false)
   const [saveErr, setSaveErr] = useState('')
   const [shareMsg, setShareMsg] = useState('')
+  const broadcastRef = useRef<BroadcastChannel | null>(null)
+
+  useEffect(() => {
+    broadcastRef.current = new BroadcastChannel(`meroz-trip-${tripId}`)
+    return () => { broadcastRef.current?.close() }
+  }, [tripId])
 
   useEffect(() => {
     const id = setTimeout(() => {
       localStorage.setItem(`draft-${tripId}`, JSON.stringify(trip))
       const clean = toClean(trip)
       localStorage.setItem(`preview-${tripId}`, JSON.stringify(clean))
-      new BroadcastChannel(`meroz-trip-${tripId}`).postMessage(clean)
+      broadcastRef.current?.postMessage(clean)
       setSaved(true)
       const t = setTimeout(() => setSaved(false), 1400)
       return () => clearTimeout(t)

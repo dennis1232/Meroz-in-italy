@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { days } from '../../store'
+import { ddmm } from '../../types'
 import { t } from '../../i18n'
 import Topbar from './Topbar'
 import DayCard from './DayCard'
 
 export default function Itinerary({ targetDay }: { targetDay: number | null }) {
   const listRef = useRef<HTMLDivElement>(null)
-  const todayStr = useMemo(() => {
-    const t = new Date()
-    return `${String(t.getDate()).padStart(2, '0')}/${String(t.getMonth() + 1).padStart(2, '0')}`
-  }, [])
+  const todayStr = useMemo(() => ddmm(new Date().toISOString().slice(0, 10)), [])
 
   useEffect(() => {
     if (targetDay == null) return
