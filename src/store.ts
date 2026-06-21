@@ -26,7 +26,20 @@ export function setCurrentTripId(id: string) { currentTripId = id }
 
 export async function loadTrip(tripId: string): Promise<void> {
   currentTripId = tripId
-  const res = await fetch(`${import.meta.env.BASE_URL}trips/${tripId}.json`, { cache: 'no-cache' })
-  if (!res.ok) throw new Error(`trips/${tripId}.json ${res.status}`)
-  initTrip(await res.json())
+  if (import.meta.env.VITE_USE_SUPABASE === 'true') {
+    const url = import.meta.env.VITE_SUPABASE_URL
+    const key = import.meta.env.VITE_SUPABASE_ANON_KEY
+    const res = await fetch(
+      `${url}/rest/v1/trips?id=eq.${encodeURIComponent(tripId)}&select=data`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+    )
+    if (!res.ok) throw new Error(`supabase trips/${tripId} ${res.status}`)
+    const rows = await res.json()
+    if (!rows.length) throw new Error(`trip ${tripId} not found`)
+    initTrip(rows[0].data)
+  } else {
+    const res = await fetch(`${import.meta.env.BASE_URL}trips/${tripId}.json`, { cache: 'no-cache' })
+    if (!res.ok) throw new Error(`trips/${tripId}.json ${res.status}`)
+    initTrip(await res.json())
+  }
 }

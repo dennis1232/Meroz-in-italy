@@ -11,6 +11,18 @@ export default function AdminHome() {
   const [query, setQuery] = useState('')
 
   const reload = useCallback(async () => {
+    if (import.meta.env.VITE_USE_SUPABASE === 'true') {
+      const url = import.meta.env.VITE_SUPABASE_URL
+      const key = import.meta.env.VITE_SUPABASE_ANON_KEY
+      const res = await fetch(
+        `${url}/rest/v1/trips?select=id,title,start_iso,end_iso&order=updated_at.desc`,
+        { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+      )
+      if (!res.ok) throw new Error(await res.text())
+      const rows = await res.json()
+      setTrips(rows.map((r: any) => ({ id: r.id, title: r.title ?? r.id, startISO: r.start_iso ?? '', endISO: r.end_iso ?? '' })))
+      return
+    }
     try {
       const res = await fetch('/.netlify/functions/list-trips', { cache: 'no-cache' })
       if (res.ok) { setTrips(await res.json()); return }
@@ -125,7 +137,7 @@ export default function AdminHome() {
         {modal.kind === 'delete' && (
           <>
             <p className="adm-modal-lead">Delete <strong>{modal.trip.title}</strong> (<code>{modal.trip.id}</code>)?</p>
-            <p className="adm-modal-note adm-modal-note-danger">This removes the trip from GitHub and cannot be undone.</p>
+            <p className="adm-modal-note adm-modal-note-danger">This permanently deletes the trip and cannot be undone.</p>
             {fieldErr && <p className="adm-modal-error">{fieldErr}</p>}
           </>
         )}
