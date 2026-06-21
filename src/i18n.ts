@@ -15,8 +15,8 @@ const S = {
   itinerarySub:   { he: 'Travel itinerary', en: '' },
 
   // overview countdown
-  countdownPre:  { he: '✈️ עוד', en: '✈️' },
-  countdownPost: { he: 'ימים לטיסה!', en: 'days to go!' },
+  countdownPre:  { he: '🌍 עוד', en: '🌍' },
+  countdownPost: { he: 'ימים לטיול!', en: 'days to go!' },
 
   // stop / map
   mapBtn:    { he: 'מפה',           en: 'Map' },
