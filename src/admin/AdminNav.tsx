@@ -25,7 +25,6 @@ export default function AdminNav({ days, onNav, onAddDay }: Props) {
       <div className="adm-nav-group">
         <button onClick={() => onNav('adm-recs')}>Recommendations</button>
         <button onClick={() => onNav('adm-contact')}>Contact</button>
-        <button onClick={() => onNav('adm-json')}>JSON Preview</button>
       </div>
     </aside>
   )

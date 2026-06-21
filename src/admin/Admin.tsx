@@ -7,7 +7,6 @@ import AdminTopbar from './AdminTopbar'
 import AdminNav from './AdminNav'
 import AdminCoverSection from './AdminCoverSection'
 import AdminContactSection from './AdminContactSection'
-import AdminJsonPreview from './AdminJsonPreview'
 import DayEditor from './DayEditor'
 import SpotSection from './SpotSection'
 
@@ -150,10 +149,9 @@ export default function Admin({ tripId }: Props) {
           />
 
           <div className="adm-hint">
-            <b>☁️ Publish:</b> Click <b>Save</b> to push to GitHub, then <b>Copy link</b> to share with travelers.
+            <b>☁️ Publish:</b> Click <b>Save</b> to publish to Supabase, then <b>Copy link</b> to share with travelers.
           </div>
 
-          <AdminJsonPreview trip={trip} />
         </div>
       </div>
     </div>

@@ -37,10 +37,6 @@ const S = {
   // install / tips
   installHelp: { he: '📲 איך מוסיפים למסך הבית / עבודה אופליין', en: '📲 How to add to home screen / offline use' },
 
-  // calendar export feature
-  calendarExport: { he: 'ייצא ליומן', en: 'Add to Calendar' },
-  calendarDone:   { he: 'יומן יוצא!', en: 'Exported!' },
-
   // intro modal
   introWelcome:      { he: 'ברוכים הבאים 🇮🇹',     en: 'Welcome 🇮🇹' },
   introLead:         { he: 'מדריך הטיול שלכם – הכל במקום אחד.', en: 'Your travel guide – everything in one place.' },
